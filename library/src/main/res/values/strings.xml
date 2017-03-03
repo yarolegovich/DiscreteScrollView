@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DiscreteScrollView</string>
+
+    <item name="key_position" type="id" />
+</resources>
