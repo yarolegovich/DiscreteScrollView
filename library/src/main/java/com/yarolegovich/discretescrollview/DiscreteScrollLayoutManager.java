@@ -2,11 +2,12 @@ package com.yarolegovich.discretescrollview;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,20 +22,22 @@ import java.lang.annotation.RetentionPolicy;
  */
 class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
+    private static final String EXTRA_POSITION = "extra_position";
+
     private static final int DIRECTION_START = -1;
     private static final int DIRECTION_END = 1;
-
     private static final int NO_POSITION = -1;
-
-    private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 250;
+    private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 150;
 
     private int childViewWidth;
-    private int childViewHeight;
+    private int childHalfWidth, childHalfHeight;
+    private int recyclerCenterX, recyclerCenterY;
 
+    private int currentScrollState;
     private int scrollToChangeTheCurrent;
+
     private int scrolled;
     private int pendingScroll;
-
     private int currentPosition;
     private int pendingPosition;
 
@@ -42,101 +45,108 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private int timeForItemSettle;
 
+    private SparseArray<View> detachedCache;
+
     private DiscreteScrollItemTransformer itemTransformer;
-    private BoundReachedFlagListener boundReachedListener;
+    private ScrollStateListener scrollStateListener;
 
     public DiscreteScrollLayoutManager(Context c) {
         this.context = c;
         this.timeForItemSettle = DEFAULT_TIME_FOR_ITEM_SETTLE;
         this.pendingPosition = NO_POSITION;
+        this.currentPosition = NO_POSITION;
+        this.detachedCache = new SparseArray<>();
         setAutoMeasureEnabled(true);
     }
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        if (getItemCount() == 0) {
-            removeAllViews();
+        if (state.getItemCount() == 0) {
+            removeAndRecycleAllViews(recycler);
+            currentPosition = pendingPosition = NO_POSITION;
+            scrolled = pendingScroll = 0;
             return;
         }
 
         boolean isFirstOrEmptyLayout = getChildCount() == 0;
-
         if (isFirstOrEmptyLayout) {
-            initChildWidthAndHeight(recycler);
+            initChildDimensions(recycler);
         }
+
+        updateRecyclerDimensions();
 
         detachAndScrapAttachedViews(recycler);
 
-        fill(recycler, state);
+        fill(recycler);
 
         applyItemTransformToChildren(state);
 
         scrollToChangeTheCurrent = childViewWidth;
     }
 
-    private void fill(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        final int currentViewCenterX = getWidth() / 2 - scrolled;
-        final int viewHalfWidth = childViewWidth / 2;
+    private void initChildDimensions(RecyclerView.Recycler recycler) {
+        View viewToMeasure = recycler.getViewForPosition(0);
+        addView(viewToMeasure);
+        measureChildWithMargins(viewToMeasure, 0, 0);
 
-        final int recyclerCenterY = getHeight() / 2;
-        final int viewTop = recyclerCenterY - childViewHeight / 2;
-        final int viewBottom = recyclerCenterY + childViewHeight / 2;
+        childViewWidth = getDecoratedMeasuredWidth(viewToMeasure);
+        childHalfWidth = childViewWidth / 2;
+        childHalfHeight = getDecoratedMeasuredHeight(viewToMeasure) / 2;
 
-        SparseArray<View> detachedCache = new SparseArray<>(getChildCount());
-        for (int i = 0; i < getChildCount(); i++) {
-            View child = getChildAt(i);
-            int position = (int) child.getTag(R.id.key_position);
-            detachedCache.put(position, child);
-        }
+        detachAndScrapView(viewToMeasure, recycler);
+    }
 
-        for (int i = 0; i < detachedCache.size(); i++) {
-            detachView(detachedCache.valueAt(i));
-        }
+    private void updateRecyclerDimensions() {
+        recyclerCenterX = getWidth() / 2;
+        recyclerCenterY = getHeight() / 2;
+    }
 
-        //Layout current item in the center
-        layoutView(recycler, state, detachedCache, currentPosition,
-                currentViewCenterX - viewHalfWidth, viewTop,
-                currentViewCenterX + viewHalfWidth, viewBottom);
+    private void fill(RecyclerView.Recycler recycler) {
+        cacheAndDetachAttachedViews();
+
+        final int currentViewCenterX = recyclerCenterX - scrolled;
+        final int childTop = recyclerCenterY - childHalfHeight;
+        final int childBottom = recyclerCenterY + childHalfHeight;
+
+        //Layout current
+        layoutView(recycler, currentPosition,
+                currentViewCenterX - childHalfWidth, childTop,
+                currentViewCenterX + childHalfWidth, childBottom);
 
         int position;
 
         //Layout items to the left of the current item
-        int viewRight = currentViewCenterX - viewHalfWidth;
+        int viewRight = currentViewCenterX - childHalfWidth;
         position = currentPosition - 1;
         while (position >= 0 && viewRight > 0) {
-            layoutView(recycler, state,
-                    detachedCache, position,
-                    viewRight - childViewWidth, viewTop,
-                    viewRight, viewBottom);
+            layoutView(recycler, position,
+                    viewRight - childViewWidth, childTop,
+                    viewRight, childBottom);
             viewRight -= childViewWidth;
             position--;
         }
 
         //Layout items to the right of the current item
-        int viewLeft = currentViewCenterX + viewHalfWidth;
+        int viewLeft = currentViewCenterX + childHalfWidth;
         position = currentPosition + 1;
         while (position < getItemCount() && viewLeft < getWidth()) {
-            layoutView(recycler, state,
-                    detachedCache, position,
-                    viewLeft, viewTop,
-                    viewLeft + childViewWidth, viewBottom);
+            layoutView(recycler, position,
+                    viewLeft, childTop,
+                    viewLeft + childViewWidth, childBottom);
             viewLeft += childViewWidth;
             position++;
         }
 
-        for (int i = 0; i < detachedCache.size(); i++) {
-            recycler.recycleView(detachedCache.valueAt(i));
-        }
+        removeAndRecycleCachedViews(recycler);
     }
 
-    private View layoutView(
-            RecyclerView.Recycler recycler, RecyclerView.State state,
-            SparseArray<View> detachedCache,
+    private void layoutView(
+            RecyclerView.Recycler recycler,
             int position, int l, int t, int r, int b) {
         View v = detachedCache.get(position);
         if (v == null) {
             v = recycler.getViewForPosition(position);
-            v.setTag(R.id.key_position, position);
+            v.setTag(R.id.dsv_key_position, position);
             addView(v);
             measureChildWithMargins(v, 0, 0);
             layoutDecoratedWithMargins(v, l, t, r, b);
@@ -144,21 +154,52 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             attachView(v);
             detachedCache.remove(position);
         }
-        return v;
     }
 
-    private void initChildWidthAndHeight(RecyclerView.Recycler recycler) {
-        View viewToMeasure = recycler.getViewForPosition(0);
-        addView(viewToMeasure);
-        measureChildWithMargins(viewToMeasure, 0, 0);
+    private void cacheAndDetachAttachedViews() {
+        detachedCache.clear();
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            int position = (int) child.getTag(R.id.dsv_key_position);
+            detachedCache.put(position, child);
+        }
 
-        context = viewToMeasure.getContext();
-
-        childViewWidth = getDecoratedMeasuredWidth(viewToMeasure);
-        childViewHeight = getDecoratedMeasuredHeight(viewToMeasure);
-
-        detachAndScrapView(viewToMeasure, recycler);
+        for (int i = 0; i < detachedCache.size(); i++) {
+            detachView(detachedCache.valueAt(i));
+        }
     }
+
+    private void removeAndRecycleCachedViews(RecyclerView.Recycler recycler) {
+        for (int i = 0; i < detachedCache.size(); i++) {
+            recycler.recycleView(detachedCache.valueAt(i));
+        }
+        detachedCache.clear();
+    }
+
+    @Override
+    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+        if (currentPosition == NO_POSITION) {
+            currentPosition = 0;
+        } else if (currentPosition >= positionStart) {
+            currentPosition += itemCount;
+        }
+    }
+
+    @Override
+    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+        if (getItemCount() == 0) {
+            currentPosition = NO_POSITION;
+        } else if (currentPosition >= positionStart) {
+            currentPosition = Math.max(0, currentPosition - itemCount);
+        }
+    }
+
+
+    @Override
+    public void onItemsChanged(RecyclerView recyclerView) {
+        currentPosition = Math.min(Math.max(0, currentPosition), getItemCount() - 1);
+    }
+
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
@@ -182,17 +223,22 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         View firstView = getChildAt(0), lastView = getChildAt(getChildCount() - 1);
         boolean newViewFromLeft = getDecoratedLeft(firstView) > 0
-                && ((Integer) firstView.getTag(R.id.key_position) > 0);
+                && ((Integer) firstView.getTag(R.id.dsv_key_position) > 0);
         boolean newViewFromRight = getDecoratedRight(lastView) < getWidth()
-                && ((Integer) lastView.getTag(R.id.key_position) < getItemCount() - 1);
+                && ((Integer) lastView.getTag(R.id.dsv_key_position) < getItemCount() - 1);
 
         if (newViewFromLeft || newViewFromRight) {
-            fill(recycler, state);
+            fill(recycler);
+        }
+
+        if (scrollStateListener != null) {
+            View current = findViewByPosition(currentPosition);
+            if (current != null) {
+                scrollStateListener.onScroll(getCenterRelativePositionOf(current));
+            }
         }
 
         applyItemTransformToChildren(state);
-
-        Log.d("scroller", "scrollBy: " + dx + ", true delta: " + delta);
 
         return delta;
     }
@@ -200,19 +246,19 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private void applyItemTransformToChildren(RecyclerView.State state) {
         if (itemTransformer != null) {
             for (int i = 0; i < getChildCount(); i++) {
-                View v = getChildAt(i);
-                int viewCenterX = (getDecoratedLeft(v) + getDecoratedRight(v)) / 2;
-                int centerX = getWidth() / 2;
-                float distanceFromCenter = viewCenterX - centerX;
-                float normalizedDistance = Math.min(Math.max(
-                        -1f, distanceFromCenter / scrollToChangeTheCurrent), 1f);
-                itemTransformer.transformItem(v, normalizedDistance);
+                View child = getChildAt(i);
+                itemTransformer.transformItem(child, getCenterRelativePositionOf(child));
             }
         }
     }
 
+
     @Override
     public void scrollToPosition(int position) {
+        if (currentPosition == position) {
+            return;
+        }
+
         currentPosition = position;
         requestLayout();
     }
@@ -252,31 +298,69 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onScrollStateChanged(int state) {
+        if (currentScrollState == RecyclerView.SCROLL_STATE_IDLE && currentScrollState != state) {
+            if (scrollStateListener != null) {
+                scrollStateListener.onScrollStart();
+            }
+        }
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
-            if (pendingPosition != NO_POSITION) {
-                currentPosition = pendingPosition;
-                pendingPosition = NO_POSITION;
-                scrolled = 0;
-            }
-
-            int scrollDirection = dxToDirection(scrolled);
-            if (Math.abs(scrolled) == scrollToChangeTheCurrent) {
-                currentPosition += scrollDirection;
-                scrolled = 0;
-            }
-
-            if (Math.abs(scrolled) >= (scrollToChangeTheCurrent * 0.6f)) {
-                pendingScroll = (scrollToChangeTheCurrent - Math.abs(scrolled)) * scrollDirection;
-            } else {
-                pendingScroll = -scrolled;
-            }
-
-            if (pendingScroll != 0) {
-                startSmoothPendingScroll();
+            //Scroll is not finished until current view is centered
+            boolean isScrollStillInProgress = !onScrollEnd();
+            if (isScrollStillInProgress) {
+                return;
             }
         } else if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
-            pendingScroll = 0;
+            onDragStart();
         }
+        currentScrollState = state;
+    }
+
+    private boolean onScrollEnd() {
+        if (pendingPosition != NO_POSITION) {
+            currentPosition = pendingPosition;
+            pendingPosition = NO_POSITION;
+            scrolled = 0;
+        }
+
+        int scrollDirection = dxToDirection(scrolled);
+        if (Math.abs(scrolled) == scrollToChangeTheCurrent) {
+            currentPosition += scrollDirection;
+            scrolled = 0;
+        }
+
+        if (Math.abs(scrolled) >= (scrollToChangeTheCurrent * 0.6f)) {
+            pendingScroll = (scrollToChangeTheCurrent - Math.abs(scrolled)) * scrollDirection;
+        } else {
+            pendingScroll = -scrolled;
+        }
+
+        if (pendingScroll == 0) {
+            if (scrollStateListener != null) {
+                scrollStateListener.onScrollEnd();
+            }
+            return true;
+        } else {
+            startSmoothPendingScroll();
+            return false;
+        }
+    }
+
+    private void onDragStart() {
+        //Here we need to:
+        //1. Stop any pending pending scroll
+        //2. Set currentPosition to position of the item that is closest to the center
+        if (Math.abs(scrolled) > scrollToChangeTheCurrent) {
+            int scrolledPositions = scrolled / scrollToChangeTheCurrent;
+            currentPosition += scrolledPositions;
+            scrolled -= scrolledPositions * scrollToChangeTheCurrent;
+        }
+        if (Math.abs(scrolled) >= scrollToChangeTheCurrent * 0.6f) {
+            int direction = dxToDirection(scrolled);
+            currentPosition += direction;
+            scrolled = (scrollToChangeTheCurrent - Math.abs(scrolled)) * -direction;
+        }
+        pendingPosition = NO_POSITION;
+        pendingScroll = 0;
     }
 
     public void onFling(int velocity) {
@@ -319,10 +403,36 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                     scrollToChangeTheCurrent - Math.abs(scrolled) :
                     scrollToChangeTheCurrent + Math.abs(scrolled);
         }
-        if (boundReachedListener != null) {
-            boundReachedListener.onFlagChanged(isBoundReached);
+        if (scrollStateListener != null) {
+            scrollStateListener.onIsBoundReachedFlagChange(isBoundReached);
         }
         return allowedScroll;
+    }
+
+    @Override
+    public void onAdapterChanged(RecyclerView.Adapter oldAdapter, RecyclerView.Adapter newAdapter) {
+        if (newAdapter.getItemCount() > 0) {
+            pendingPosition = NO_POSITION;
+            scrolled = pendingScroll = 0;
+            currentPosition = 0;
+        }
+        removeAllViews();
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        if (pendingPosition != NO_POSITION) {
+            currentPosition = pendingPosition;
+        }
+        bundle.putInt(EXTRA_POSITION, currentPosition);
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        Bundle bundle = (Bundle) state;
+        currentPosition = bundle.getInt(EXTRA_POSITION);
     }
 
     @Direction
@@ -340,12 +450,34 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         this.itemTransformer = itemTransformer;
     }
 
-    public void setBoundReachedListener(BoundReachedFlagListener boundReachedListener) {
-        this.boundReachedListener = boundReachedListener;
+    public void setScrollStateListener(ScrollStateListener boundReachedListener) {
+        this.scrollStateListener = boundReachedListener;
     }
 
     public void setTimeForItemSettle(int timeForItemSettle) {
         this.timeForItemSettle = timeForItemSettle;
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    @Override
+    public View findViewByPosition(int position) {
+        for (int i = 0; i < getChildCount(); i++) {
+            View v = getChildAt(i);
+            if (((Integer) v.getTag(R.id.dsv_key_position)) == position) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    private float getCenterRelativePositionOf(View v) {
+        int viewCenterX = (getDecoratedLeft(v) + getDecoratedRight(v)) / 2;
+        int centerX = getWidth() / 2;
+        float distanceFromCenter = viewCenterX - centerX;
+        return Math.min(Math.max(-1f, distanceFromCenter / scrollToChangeTheCurrent), 1f);
     }
 
     private class DiscreteLinearSmoothScroller extends LinearSmoothScroller {
@@ -372,8 +504,14 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    public interface BoundReachedFlagListener {
-        void onFlagChanged(boolean isBoundReached);
+    public interface ScrollStateListener {
+        void onIsBoundReachedFlagChange(boolean isBoundReached);
+
+        void onScrollStart();
+
+        void onScrollEnd();
+
+        void onScroll(float currentViewPosition);
     }
 
     @IntDef({DIRECTION_START, DIRECTION_END})

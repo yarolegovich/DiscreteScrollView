@@ -2,10 +2,8 @@ package com.yarolegovich.discretescrollview;
 
 import android.content.Context;
 import android.support.annotation.IntRange;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
 
@@ -16,6 +14,9 @@ import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransform
 public class DiscreteScrollView extends RecyclerView {
 
     private DiscreteScrollLayoutManager layoutManager;
+
+    private ScrollStateChangeListener scrollStateChangeListener;
+    private OnCurrentItemChangedListener currentItemChangeListener;
 
     public DiscreteScrollView(Context context) {
         super(context);
@@ -31,11 +32,37 @@ public class DiscreteScrollView extends RecyclerView {
 
     {
         layoutManager = new DiscreteScrollLayoutManager(getContext());
-        layoutManager.setBoundReachedListener(new DiscreteScrollLayoutManager.BoundReachedFlagListener() {
+        layoutManager.setScrollStateListener(new DiscreteScrollLayoutManager.ScrollStateListener() {
             @Override
-            public void onFlagChanged(boolean isBoundReached) {
-                Log.d("tag", "bound reached: " + isBoundReached);
+            public void onIsBoundReachedFlagChange(boolean isBoundReached) {
                 setOverScrollMode(isBoundReached ? OVER_SCROLL_ALWAYS : OVER_SCROLL_NEVER);
+            }
+
+            @Override
+            public void onScrollStart() {
+                if (scrollStateChangeListener != null) {
+                    scrollStateChangeListener.onScrollStart();
+                }
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public void onScrollEnd() {
+                if (scrollStateChangeListener != null) {
+                    scrollStateChangeListener.onScrollEnd();
+                }
+                if (currentItemChangeListener != null) {
+                    int current = layoutManager.getCurrentPosition();
+                    ViewHolder holder = getChildViewHolder(layoutManager.findViewByPosition(current));
+                    currentItemChangeListener.onItemChanged(holder, current);
+                }
+            }
+
+            @Override
+            public void onScroll(float currentViewPosition) {
+                if (scrollStateChangeListener != null) {
+                    scrollStateChangeListener.onScroll(currentViewPosition);
+                }
             }
         });
         setLayoutManager(layoutManager);
@@ -57,8 +84,28 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setItemTransformer(transformer);
     }
 
-    public void setItemTransitionTimeMillis(@IntRange(from = 20) int millis) {
+    public void setItemTransitionTimeMillis(@IntRange(from = 10) int millis) {
+        layoutManager.setTimeForItemSettle(millis);
+    }
 
+    public void setScrollListener(ScrollStateChangeListener scrollStateChangeListener) {
+        this.scrollStateChangeListener = scrollStateChangeListener;
+    }
+
+    public void setCurrentItemChangeListener(OnCurrentItemChangedListener<?> currentItemChangeListener) {
+        this.currentItemChangeListener = currentItemChangeListener;
+    }
+
+    public interface ScrollStateChangeListener {
+        void onScrollStart();
+
+        void onScrollEnd();
+
+        void onScroll(float position);
+    }
+
+    public interface OnCurrentItemChangedListener<T extends ViewHolder> {
+        void onItemChanged(T viewHolder, int position);
     }
 
 }

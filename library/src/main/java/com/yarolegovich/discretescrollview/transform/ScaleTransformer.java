@@ -1,6 +1,7 @@
 package com.yarolegovich.discretescrollview.transform;
 
 import android.support.annotation.FloatRange;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -19,7 +20,7 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
         pivotX = Pivot.X.CENTER.create();
         pivotY = Pivot.Y.CENTER.create();
         minScale = 0.8f;
-        maxScale = 1.05f;
+        maxScale = 1f;
         maxMinDiff = maxScale - minScale;
     }
 
@@ -78,7 +79,7 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
 
         private void assertAxis(Pivot pivot, @Pivot.Axis int axis) {
             if (pivot.getAxis() != axis) {
-                throw new IllegalArgumentException("You passed a Pivot with wrong axis.");
+                throw new IllegalArgumentException("You passed a Pivot for wrong axis.");
             }
         }
     }
