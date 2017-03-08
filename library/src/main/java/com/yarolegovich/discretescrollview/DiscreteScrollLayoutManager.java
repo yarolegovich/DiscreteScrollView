@@ -8,6 +8,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -332,7 +333,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         }
 
         if (isAnotherItemCloserThanCurrent()) {
-            pendingScroll = getHowMuchIsLeftToScroll();
+            pendingScroll = getHowMuchIsLeftToScroll(scrolled);
         } else {
             pendingScroll = -scrolled;
         }
@@ -361,7 +362,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (isAnotherItemCloserThanCurrent()) {
             int direction = dxToDirection(scrolled);
             currentPosition += direction;
-            scrolled = -getHowMuchIsLeftToScroll();
+            scrolled = -getHowMuchIsLeftToScroll(scrolled);
         }
         pendingPosition = NO_POSITION;
         pendingScroll = 0;
@@ -372,7 +373,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         int newPosition = currentPosition + direction;
         boolean canFling = newPosition >= 0 && newPosition < getItemCount();
         if (canFling) {
-            pendingScroll = getHowMuchIsLeftToScroll();
+            pendingScroll = getHowMuchIsLeftToScroll(velocity);
             if (pendingScroll != 0) {
                 startSmoothPendingScroll();
             }
@@ -477,8 +478,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return null;
     }
 
-    private int getHowMuchIsLeftToScroll() {
-        return (scrollToChangeTheCurrent - Math.abs(scrolled)) * dxToDirection(scrolled);
+    private int getHowMuchIsLeftToScroll(int dx) {
+        return (scrollToChangeTheCurrent - Math.abs(scrolled)) * dxToDirection(dx);
     }
 
     private boolean isAnotherItemCloserThanCurrent() {
