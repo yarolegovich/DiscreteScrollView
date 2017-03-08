@@ -10,13 +10,13 @@ import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransform
 /**
  * Created by yarolegovich on 18.02.2017.
  */
-
+@SuppressWarnings("unchecked")
 public class DiscreteScrollView extends RecyclerView {
 
     private DiscreteScrollLayoutManager layoutManager;
 
     private ScrollStateChangeListener scrollStateChangeListener;
-    private OnCurrentItemChangedListener currentItemChangeListener;
+    private CurrentItemChangeListener currentItemChangeListener;
 
     public DiscreteScrollView(Context context) {
         super(context);
@@ -41,20 +41,25 @@ public class DiscreteScrollView extends RecyclerView {
             @Override
             public void onScrollStart() {
                 if (scrollStateChangeListener != null) {
-                    scrollStateChangeListener.onScrollStart();
+                    int current = layoutManager.getCurrentPosition();
+                    ViewHolder holder = getViewHolder(current);
+                    scrollStateChangeListener.onScrollStart(holder, current);
                 }
             }
 
             @Override
-            @SuppressWarnings("unchecked")
             public void onScrollEnd() {
+                ViewHolder holder = null;
+                int current = layoutManager.getCurrentPosition();
                 if (scrollStateChangeListener != null) {
-                    scrollStateChangeListener.onScrollEnd();
+                    holder = getViewHolder(current);
+                    scrollStateChangeListener.onScrollEnd(holder, current);
                 }
                 if (currentItemChangeListener != null) {
-                    int current = layoutManager.getCurrentPosition();
-                    ViewHolder holder = getChildViewHolder(layoutManager.findViewByPosition(current));
-                    currentItemChangeListener.onItemChanged(holder, current);
+                    if (holder == null) {
+                        holder = getViewHolder(current);
+                    }
+                    currentItemChangeListener.onCurrentItemChanged(holder, current);
                 }
             }
 
@@ -62,6 +67,14 @@ public class DiscreteScrollView extends RecyclerView {
             public void onScroll(float currentViewPosition) {
                 if (scrollStateChangeListener != null) {
                     scrollStateChangeListener.onScroll(currentViewPosition);
+                }
+            }
+
+            @Override
+            public void onCurrentViewFirstLayout() {
+                if (currentItemChangeListener != null) {
+                    int current = layoutManager.getCurrentPosition();
+                    currentItemChangeListener.onCurrentItemChanged(getViewHolder(current), current);
                 }
             }
         });
@@ -79,6 +92,9 @@ public class DiscreteScrollView extends RecyclerView {
         return isFling;
     }
 
+    public ViewHolder getViewHolder(int position) {
+        return getChildViewHolder(layoutManager.findViewByPosition(position));
+    }
 
     public void setItemTransformer(DiscreteScrollItemTransformer transformer) {
         layoutManager.setItemTransformer(transformer);
@@ -88,24 +104,29 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTimeForItemSettle(millis);
     }
 
-    public void setScrollListener(ScrollStateChangeListener scrollStateChangeListener) {
+    public void setScrollStateChangeListener(ScrollStateChangeListener<?> scrollStateChangeListener) {
         this.scrollStateChangeListener = scrollStateChangeListener;
     }
 
-    public void setCurrentItemChangeListener(OnCurrentItemChangedListener<?> currentItemChangeListener) {
+    public void setCurrentItemChangeListener(CurrentItemChangeListener<?> currentItemChangeListener) {
         this.currentItemChangeListener = currentItemChangeListener;
     }
 
-    public interface ScrollStateChangeListener {
-        void onScrollStart();
-
-        void onScrollEnd();
-
-        void onScroll(float position);
+    public int getCurrentItem() {
+        return layoutManager.getCurrentPosition();
     }
 
-    public interface OnCurrentItemChangedListener<T extends ViewHolder> {
-        void onItemChanged(T viewHolder, int position);
+    public interface ScrollStateChangeListener<T extends ViewHolder> {
+
+        void onScrollStart(T currentItemHolder, int adapterPosition);
+
+        void onScrollEnd(T currentItemHolder, int adapterPosition);
+
+        void onScroll(float scrollPosition);
+    }
+
+    public interface CurrentItemChangeListener<T extends ViewHolder> {
+        void onCurrentItemChanged(T viewHolder, int adapterPosition);
     }
 
 }

@@ -79,7 +79,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         fill(recycler);
 
-        applyItemTransformToChildren(state);
+        applyItemTransformToChildren();
+
+        if (isFirstOrEmptyLayout) {
+            scrollStateListener.onCurrentViewFirstLayout();
+        }
 
         scrollToChangeTheCurrent = childViewWidth;
     }
@@ -238,12 +242,12 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             }
         }
 
-        applyItemTransformToChildren(state);
+        applyItemTransformToChildren();
 
         return delta;
     }
 
-    private void applyItemTransformToChildren(RecyclerView.State state) {
+    private void applyItemTransformToChildren() {
         if (itemTransformer != null) {
             for (int i = 0; i < getChildCount(); i++) {
                 View child = getChildAt(i);
@@ -251,7 +255,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             }
         }
     }
-
 
     @Override
     public void scrollToPosition(int position) {
@@ -328,8 +331,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             scrolled = 0;
         }
 
-        if (Math.abs(scrolled) >= (scrollToChangeTheCurrent * 0.6f)) {
-            pendingScroll = (scrollToChangeTheCurrent - Math.abs(scrolled)) * scrollDirection;
+        if (isAnotherItemCloserThanCurrent()) {
+            pendingScroll = getHowMuchIsLeftToScroll();
         } else {
             pendingScroll = -scrolled;
         }
@@ -349,15 +352,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         //Here we need to:
         //1. Stop any pending pending scroll
         //2. Set currentPosition to position of the item that is closest to the center
-        if (Math.abs(scrolled) > scrollToChangeTheCurrent) {
+        boolean isScrollingThroughMultiplePositions = Math.abs(scrolled) > scrollToChangeTheCurrent;
+        if (isScrollingThroughMultiplePositions) {
             int scrolledPositions = scrolled / scrollToChangeTheCurrent;
             currentPosition += scrolledPositions;
             scrolled -= scrolledPositions * scrollToChangeTheCurrent;
         }
-        if (Math.abs(scrolled) >= scrollToChangeTheCurrent * 0.6f) {
+        if (isAnotherItemCloserThanCurrent()) {
             int direction = dxToDirection(scrolled);
             currentPosition += direction;
-            scrolled = (scrollToChangeTheCurrent - Math.abs(scrolled)) * -direction;
+            scrolled = -getHowMuchIsLeftToScroll();
         }
         pendingPosition = NO_POSITION;
         pendingScroll = 0;
@@ -368,7 +372,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         int newPosition = currentPosition + direction;
         boolean canFling = newPosition >= 0 && newPosition < getItemCount();
         if (canFling) {
-            pendingScroll = (scrollToChangeTheCurrent - Math.abs(scrolled)) * direction;
+            pendingScroll = getHowMuchIsLeftToScroll();
             if (pendingScroll != 0) {
                 startSmoothPendingScroll();
             }
@@ -473,6 +477,14 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return null;
     }
 
+    private int getHowMuchIsLeftToScroll() {
+        return (scrollToChangeTheCurrent - Math.abs(scrolled)) * dxToDirection(scrolled);
+    }
+
+    private boolean isAnotherItemCloserThanCurrent() {
+        return Math.abs(scrolled) >= scrollToChangeTheCurrent * 0.6f;
+    }
+
     private float getCenterRelativePositionOf(View v) {
         int viewCenterX = (getDecoratedLeft(v) + getDecoratedRight(v)) / 2;
         int centerX = getWidth() / 2;
@@ -512,6 +524,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         void onScrollEnd();
 
         void onScroll(float currentViewPosition);
+
+        void onCurrentViewFirstLayout();
     }
 
     @IntDef({DIRECTION_START, DIRECTION_END})
