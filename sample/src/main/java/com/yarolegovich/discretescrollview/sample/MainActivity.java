@@ -1,68 +1,86 @@
 package com.yarolegovich.discretescrollview.sample;
 
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
-import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.sample.shop.ShopActivity;
+import com.yarolegovich.discretescrollview.sample.weather.WeatherActivity;
 import com.yarolegovich.discretescrollview.transform.Pivot;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private DiscreteScrollView list1, list2;
-    private EditText input;
+    private static final Uri URL_TAYA_BEHANCE = Uri.parse("https://www.behance.net/yurkivt");
+    private static final Uri URL_SHOP_PHOTOS = Uri.parse("https://herriottgrace.com/collections/all");
+    private static final Uri URL_CITY_ICONS = Uri.parse("https://www.flaticon.com");
+
+    private View root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        list1 = (DiscreteScrollView) findViewById(R.id.list_top);
-        list1.setAdapter(new DiscreteScrollViewAdapter(R.layout.item_card));
-        list1.setItemTransformer(new ScaleTransformer.Builder()
-                .setMaxScale(1.05f)
-                .setMinScale(0.85f)
-                .setPivotY(Pivot.Y.BOTTOM)
-                .build());
+        root = findViewById(R.id.screen);
 
-        list2 = (DiscreteScrollView) findViewById(R.id.list_bot);
-        list2.setAdapter(new DiscreteScrollViewAdapter(R.layout.item_small_card));
-        list2.setItemTransformer(new ScaleTransformer.Builder()
-                .setMaxScale(1.15f)
-                .setMinScale(0.85f)
-                .build());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-        input = (EditText) findViewById(R.id.input);
+        findViewById(R.id.preview_shop).setOnClickListener(this);
+        findViewById(R.id.preview_weather).setOnClickListener(this);
 
-        findViewById(R.id.btn_scroll).setOnClickListener(this);
-        findViewById(R.id.btn_smooth_scroll).setOnClickListener(this);
+        findViewById(R.id.credit_city_icons).setOnClickListener(this);
+        findViewById(R.id.credit_shop_photos).setOnClickListener(this);
+        findViewById(R.id.credit_taya).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_scroll:
-                list1.scrollToPosition(getInput());
-                list2.scrollToPosition(getInput());
+            case R.id.preview_shop:
+                start(ShopActivity.class);
                 break;
-            case R.id.btn_smooth_scroll:
-                list1.smoothScrollToPosition(getInput());
-                list2.smoothScrollToPosition(getInput());
+            case R.id.preview_weather:
+                start(WeatherActivity.class);
+                break;
+            case R.id.credit_city_icons:
+                open(URL_CITY_ICONS);
+                break;
+            case R.id.credit_shop_photos:
+                open(URL_SHOP_PHOTOS);
+                break;
+            case R.id.credit_taya:
+                open(URL_TAYA_BEHANCE);
                 break;
         }
-
     }
 
-    private int getInput() {
-        try {
-            return Integer.parseInt(input.getText().toString());
-        } catch (Exception e) {
-            return 0;
+    private void open(Uri url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(url);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Snackbar.make(root,
+                    R.string.msg_no_browser,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
         }
+    }
+
+    private void start(Class<? extends Activity> token) {
+        Intent intent = new Intent(this, token);
+        startActivity(intent);
     }
 }

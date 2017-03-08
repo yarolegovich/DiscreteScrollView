@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.yarolegovich.mp.MaterialSeekBarPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        app:mp_default_value="150"
+        app:mp_key="@string/pref_key_transition_time"
+        app:mp_max_val="1000"
+        app:mp_min_val="10"
+        app:mp_show_val="true"
+        app:mp_title="@string/dialog_seekbar_transition_time" />
+
+    <ImageView
+        android:id="@+id/dialog_btn_dismiss"
+        style="@style/ClickableImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:padding="12dp"
+        android:src="@drawable/ic_close_black_24dp"
+        android:tint="@color/grayIconTint" />
+</FrameLayout>

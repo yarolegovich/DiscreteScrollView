@@ -1,3 +1,26 @@
 <resources>
-    <string name="app_name">DiscreteScrollView</string>
+    <string name="app_name">DiscreteScrollView Sample</string>
+
+    <string name="card_title_preview">Preview</string>
+    <string name="card_title_credits">Credits</string>
+
+    <string name="preview_title_big_cards">Big cards</string>
+    <string name="preview_title_small_cards">Small cards</string>
+
+    <string name="credit_title_taya">Taisiya Yurkiv</string>
+    <string name="credit_title_flaticon">Zlatko Najdenovski, Freepik</string>
+    <string name="credit_title_herriot">Herriottgrace</string>
+    <string name="credit_summary_taya">Sample app design</string>
+    <string name="credit_summary_flaticon">Monument icons from www.flaticon.com</string>
+    <string name="credit_summary_herriot">Shop goods photos from www.herriottgrace.com</string>
+
+    <string name="btn_smooth_scroll">Smooth scroll</string>
+    <string name="btn_transition_time">Transition time</string>
+
+    <string name="dialog_seekbar_transition_time">Item transition time in millis</string>
+
+    <string name="msg_no_browser">No app found to open the url</string>
+    <string name="msg_unsupported_op">Unsupported operation</string>
+
+    <string name="pref_key_transition_time" translatable="false">pref_key_transition_time</string>
 </resources>

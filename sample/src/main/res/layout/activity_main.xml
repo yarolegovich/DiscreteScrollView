@@ -1,48 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
+    android:id="@+id/screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.yarolegovich.discretescrollview.sample.MainActivity">
 
-    <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:id="@+id/list_top"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"/>
+        android:layout_height="wrap_content">
 
-    <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:id="@+id/list_bot"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"/>
+        <include layout="@layout/toolbar" />
+    </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        app:mpc_title="@string/card_title_preview">
 
-        <EditText
-            android:id="@+id/input"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
+        <com.yarolegovich.mp.MaterialRightIconPreference
+            android:id="@+id/preview_shop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_icon="@drawable/ic_shopping_black_24dp"
+            app:mp_icon_tint="@color/grayIconTint"
+            app:mp_title="@string/preview_title_big_cards" />
 
-        <Button
-            android:id="@+id/btn_scroll"
-            android:text="scroll"
-            style="?android:borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <com.yarolegovich.mp.MaterialRightIconPreference
+            android:id="@+id/preview_weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_icon="@drawable/ic_weather_partlycloudy_black_24dp"
+            app:mp_icon_tint="@color/grayIconTint"
+            app:mp_title="@string/preview_title_small_cards" />
 
-        <Button
-            android:id="@+id/btn_smooth_scroll"
-            style="?android:borderlessButtonStyle"
-            android:text="smooth scroll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-    </LinearLayout>
-</LinearLayout>
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mpc_title="@string/card_title_credits">
+
+        <com.yarolegovich.mp.MaterialRightIconPreference
+            android:id="@+id/credit_taya"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_icon="@drawable/ic_behance_black_24dp"
+            app:mp_icon_tint="@color/grayIconTint"
+            app:mp_summary="@string/credit_summary_taya"
+            app:mp_title="@string/credit_title_taya" />
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/credit_city_icons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_summary="@string/credit_summary_flaticon"
+            app:mp_title="@string/credit_title_flaticon" />
+
+        <com.yarolegovich.mp.MaterialRightIconPreference
+            android:id="@+id/credit_shop_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_summary="@string/credit_summary_herriot"
+            app:mp_title="@string/credit_title_herriot" />
+
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+</com.yarolegovich.mp.MaterialPreferenceScreen>
