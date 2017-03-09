@@ -54,7 +54,6 @@ public class WeatherActivity extends AppCompatActivity implements
 
     @Override
     public void onCurrentItemChanged(ForecastAdapter.ViewHolder holder, int position) {
-        Log.d("tag", "currentItem changed: " + position);
         forecastView.setForecast(forecasts.get(position));
         holder.showText();
     }

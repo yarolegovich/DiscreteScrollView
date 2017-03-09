@@ -50,13 +50,12 @@
 
     <ImageView
         android:id="@+id/home"
+        style="@style/ClickableImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="32dp"
-        android:background="?android:selectableItemBackgroundBorderless"
-        android:clickable="true"
         android:padding="8dp"
         android:src="@drawable/ic_arrow_back_black_24dp"
         android:tint="@android:color/white" />
