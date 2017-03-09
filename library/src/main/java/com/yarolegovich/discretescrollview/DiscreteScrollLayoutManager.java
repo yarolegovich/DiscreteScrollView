@@ -84,11 +84,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         applyItemTransformToChildren();
 
-        if (isFirstOrEmptyLayout) {
-            scrollStateListener.onCurrentViewFirstLayout();
-        }
-
-        scrollToChangeTheCurrent = childViewWidth;
+        notifyFirstLayoutCompleted();
     }
 
     private void initChildDimensions(RecyclerView.Recycler recycler) {
@@ -99,6 +95,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         childViewWidth = getDecoratedMeasuredWidth(viewToMeasure);
         childHalfWidth = childViewWidth / 2;
         childHalfHeight = getDecoratedMeasuredHeight(viewToMeasure) / 2;
+
+        //This is the distance between adjacent view's x-center coordinates
+        scrollToChangeTheCurrent = childViewWidth;
 
         detachAndScrapView(viewToMeasure, recycler);
     }
@@ -224,22 +223,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         offsetChildrenHorizontal(-delta);
 
         View firstChild = getFirstChild(), lastChild = getLastChild();
-
-        boolean newViewFromLeft = getDecoratedLeft(firstChild) > 0
+        boolean isNewVisibleFromLeft = getDecoratedLeft(firstChild) > 0
                 && getPosition(firstChild) > 0;
-        boolean newViewFromRight = getDecoratedRight(lastChild) < getWidth()
+        boolean isNewVisibleFromRight = getDecoratedRight(lastChild) < getWidth()
                 && getPosition(lastChild) < getItemCount() - 1;
 
-        if (newViewFromLeft || newViewFromRight) {
+        if (isNewVisibleFromLeft || isNewVisibleFromRight) {
             fill(recycler);
         }
 
-        if (scrollStateListener != null) {
-            View current = findViewByPosition(currentPosition);
-            if (current != null) {
-                scrollStateListener.onScroll(getCenterRelativePositionOf(current));
-            }
-        }
+        notifyScroll();
 
         applyItemTransformToChildren();
 
@@ -299,8 +292,12 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             //Scroll is not finished until current view is centered
-            boolean isScrollStillInProgress = !onScrollEnd();
-            if (isScrollStillInProgress) {
+            boolean isScrollEnded = onScrollEnd();
+            if (isScrollEnded) {
+                notifyScrollEnd();
+            } else {
+                //Scroll continues and we don't want to set currentScrollState to STATE_IDLE,
+                //because this will then trigger notifyScrollStart()
                 return;
             }
         } else if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -309,6 +306,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         currentScrollState = state;
     }
 
+    /**
+     * @return true if scroll is ended and we don't need to settle items
+     */
     private boolean onScrollEnd() {
         if (pendingPosition != NO_POSITION) {
             currentPosition = pendingPosition;
@@ -329,7 +329,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         }
 
         if (pendingScroll == 0) {
-            notifyScrollEnd();
             return true;
         } else {
             startSmoothPendingScroll();
@@ -339,7 +338,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private void onDragStart() {
         //Here we need to:
-        //1. Stop any pending pending scroll
+        //1. Stop any pending scroll
         //2. Set currentPosition to position of the item that is closest to the center
         boolean isScrollingThroughMultiplePositions = Math.abs(scrolled) > scrollToChangeTheCurrent;
         if (isScrollingThroughMultiplePositions) {
@@ -385,9 +384,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         boolean isBoundReached;
         boolean isScrollDirectionAsBefore = direction * scrolled > 0;
         if (direction == DIRECTION_START && currentPosition == 0) {
+            //We can scroll to the left when currentPosition == 0 only if we scrolled to the right before
             isBoundReached = scrolled == 0;
             allowedScroll = isBoundReached ? 0 : Math.abs(scrolled);
         } else if (direction == DIRECTION_END && currentPosition == getItemCount() - 1) {
+            //We can scroll to the right when currentPosition == last only if we scrolled to the left before
             isBoundReached = scrolled == 0;
             allowedScroll = isBoundReached ? 0 : Math.abs(scrolled);
         } else {
@@ -396,9 +397,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                     scrollToChangeTheCurrent - Math.abs(scrolled) :
                     scrollToChangeTheCurrent + Math.abs(scrolled);
         }
-        if (scrollStateListener != null) {
-            scrollStateListener.onIsBoundReachedFlagChange(isBoundReached);
-        }
+        notifyBoundReached(isBoundReached);
         return allowedScroll;
     }
 
@@ -504,6 +503,27 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private void notifyScrollStart() {
         if (scrollStateListener != null) {
             scrollStateListener.onScrollStart();
+        }
+    }
+
+    private void notifyBoundReached(boolean isReached) {
+        if (scrollStateListener != null) {
+            scrollStateListener.onIsBoundReachedFlagChange(isReached);
+        }
+    }
+
+    private void notifyScroll() {
+        if (scrollStateListener != null) {
+            float position = -Math.min(Math.max(-1f,
+                    scrolled / (float) scrollToChangeTheCurrent),
+                    1f);
+            scrollStateListener.onScroll(position);
+        }
+    }
+
+    private void notifyFirstLayoutCompleted() {
+        if (scrollStateListener != null) {
+            scrollStateListener.onCurrentViewFirstLayout();
         }
     }
 
