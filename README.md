@@ -4,40 +4,42 @@ The library is a RecyclerView-based implementation of a scrollable list, where c
 It is similar to a ViewPager, but you can painleslly create layout, where views adjacent to the currently selected view are partially or 
 fully visible on the screen (I've tried to use ViewPager for this purpose and, please, don't repeat my mistakes - better use this library!).
 
-//GIF1 goes here
+![GifSampleShop](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_shop.gif)
 
 ## Gradle 
 Add this into your dependencies block. (May be not added to jCenter() yet).
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.0.0
+compile 'com.yarolegovich:discrete-scrollview:1.0.1'
 ```
 ## Sample
-Please see the sample app for examples of library usage. 
-//GIF2 goes here
+Please see the [sample app] (https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage. 
+
+![GifSampleWeather](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_weather.gif)
 
 ## Wiki
-###General
+### General
 The library uses a custom LayoutManager to adjust items' positions on the screen and handle scroll, however it is not exposed to the client 
 code. All public API is accessible through DiscreteScrollView class, which is a simple descendant of RecyclerView.
 
 If you have ever used RecyclerView - you already know how to use this library. One thing to note - you should NOT set LayoutManager.
 
-#### How to use the library:
+#### Usage:
  1. Add DiscreteScrollView to your layout either using xml or code:
- 2. Create your implementation of RecyclerView.Adapter. Refer to the sample for an example, if you don't know how to do it.
+ 2. Create your implementation of RecyclerView.Adapter. Refer to the [sample] (https://github.com/yarolegovich/DiscreteScrollView/blob/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample/shop/ShopAdapter.java) for an example, if you don't know how to do it.
  3. Set the adapter.
  4. You are done! 
 ```xml
 <com.yarolegovich.discretescrollview.DiscreteScrollView
-        android:id="@+id/picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+  android:id="@+id/picker"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content" />
 ```
 ```java
 DiscreteScrollView scrollView = findViewById(R.id.picker);
 scrollView.setAdapter(new YourAdapterImplementation());
 ```
-###API
+
+### API
 #### Related to the current item:
 ```java
 scrollView.getCurrentItem(); //returns adapter position of the currently selected item or -1 if adapter is empty.
@@ -73,8 +75,9 @@ cityPicker.setItemTransformer(new ScaleTransformer.Builder()
   .build());
 ```
 You may see how it works on GIFs.
+
 #### Callbacks
-* Scroll state changes
+* Scroll state changes:
 ```java
 scrollView.setScrollStateChangeListener(listener);
 
@@ -93,7 +96,7 @@ public interface ScrollStateChangeListener<T extends ViewHolder> {
   void onScroll(float scrollPosition); 
 }
 ```
-* Current selection changes
+* Current selection changes:
 ```java
 scrollView.setCurrentItemChangeListener(listener);
 
@@ -106,7 +109,10 @@ public interface CurrentItemChangeListener<T extends ViewHolder> {
 }
 ```
 
-###License
+### Special thanks
+Thanks to [Tayisiya Yurkiv] (https://www.behance.net/yurkivt) for sample app design and beautiful GIFs.
+
+### License
 ```
 Copyright 2017 Yaroslav Shevchuk
 
