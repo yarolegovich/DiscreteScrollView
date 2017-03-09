@@ -3,6 +3,7 @@ package com.yarolegovich.discretescrollview.sample.weather;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
@@ -53,6 +54,7 @@ public class WeatherActivity extends AppCompatActivity implements
 
     @Override
     public void onCurrentItemChanged(ForecastAdapter.ViewHolder holder, int position) {
+        Log.d("tag", "currentItem changed: " + position);
         forecastView.setForecast(forecasts.get(position));
         holder.showText();
     }

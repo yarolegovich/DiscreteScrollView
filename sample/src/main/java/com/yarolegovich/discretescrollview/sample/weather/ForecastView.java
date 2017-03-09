@@ -8,6 +8,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Build;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.RequiresApi;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
@@ -108,7 +109,7 @@ public class ForecastView extends LinearLayout {
                 .start();
     }
 
-    public void onScroll(float fraction , Forecast oldF, Forecast newF) {
+    public void onScroll(float fraction, Forecast oldF, Forecast newF) {
         weatherImage.setScaleX(fraction);
         weatherImage.setScaleY(fraction);
         currentGradient = mix(fraction,
@@ -129,15 +130,15 @@ public class ForecastView extends LinearLayout {
     private int[] weatherToGradient(Weather weather) {
         switch (weather) {
             case PERIODIC_CLOUDS:
-                return colors("#3453d1", "#6d69ff", "#cd47c6");
+                return colors(R.array.gradientPeriodicClouds);
             case CLOUDY:
-                return colors("#62bff5", "#61b3e5", "#5d8fb2");
+                return colors(R.array.gradientCloudy);
             case MOSTLY_CLOUDY:
-                return colors("#51bbf5", "#71c3ee", "#f3e5d2");
+                return colors(R.array.gradientMostlyCloudy);
             case PARTLY_CLOUDY:
-                return colors("#5b64be", "#6084df", "#64a2ff");
+                return colors(R.array.gradientPartlyCloudy);
             case CLEAR:
-                return colors("#6d4fbe", "#6c56be", "#a189f1");
+                return colors(R.array.gradientClear);
             default:
                 throw new IllegalArgumentException();
         }
@@ -160,12 +161,8 @@ public class ForecastView extends LinearLayout {
         }
     }
 
-    private int[] colors(String... colors) {
-        int[] result = new int[colors.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = Color.parseColor(colors[i]);
-        }
-        return result;
+    private int[] colors(@ArrayRes int res) {
+        return getContext().getResources().getIntArray(res);
     }
 
 }
