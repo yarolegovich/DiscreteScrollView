@@ -84,7 +84,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         applyItemTransformToChildren();
 
-        notifyFirstLayoutCompleted();
+        if (isFirstOrEmptyLayout) {
+            notifyFirstLayoutCompleted();
+        }
     }
 
     private void initChildDimensions(RecyclerView.Recycler recycler) {

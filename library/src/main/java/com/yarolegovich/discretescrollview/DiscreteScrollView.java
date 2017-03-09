@@ -82,6 +82,18 @@ public class DiscreteScrollView extends RecyclerView {
     }
 
     @Override
+    public void setLayoutManager(LayoutManager layout) {
+        if (layout instanceof DiscreteScrollLayoutManager) {
+            super.setLayoutManager(layout);
+        } else {
+            throw new IllegalArgumentException(
+                    "You should not set LayoutManager on DiscreteScrollView.class" +
+                            "instance. Library uses a special one. Just don't call the method.");
+        }
+    }
+
+
+    @Override
     public boolean fling(int velocityX, int velocityY) {
         boolean isFling = super.fling(velocityX, velocityY);
         if (isFling) {
@@ -112,6 +124,9 @@ public class DiscreteScrollView extends RecyclerView {
         this.currentItemChangeListener = currentItemChangeListener;
     }
 
+    /**
+     * @return adapter position of the current item or -1 if nothing is selected
+     */
     public int getCurrentItem() {
         return layoutManager.getCurrentPosition();
     }
