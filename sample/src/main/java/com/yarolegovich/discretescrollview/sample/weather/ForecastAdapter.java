@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.Target;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.sample.R;
 
 import java.util.List;
@@ -26,10 +27,17 @@ import java.util.List;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHolder> {
 
+    private RecyclerView parentRecycler;
     private List<Forecast> data;
 
     public ForecastAdapter(List<Forecast> data) {
         this.data = data;
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        parentRecycler = recyclerView;
     }
 
     @Override
@@ -55,7 +63,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         return data.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView imageView;
         private TextView textView;
@@ -64,6 +72,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.city_image);
             textView = (TextView) itemView.findViewById(R.id.city_name);
+
+            itemView.findViewById(R.id.container).setOnClickListener(this);
         }
 
         public void showText() {
@@ -89,6 +99,11 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             imageView.animate().scaleX(1f).scaleY(1f)
                     .setDuration(200)
                     .start();
+        }
+
+        @Override
+        public void onClick(View v) {
+            parentRecycler.smoothScrollToPosition(getAdapterPosition());
         }
     }
 
