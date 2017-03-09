@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final Uri URL_TAYA_BEHANCE = Uri.parse("https://www.behance.net/yurkivt");
     private static final Uri URL_SHOP_PHOTOS = Uri.parse("https://herriottgrace.com/collections/all");
     private static final Uri URL_CITY_ICONS = Uri.parse("https://www.flaticon.com");
+    private static final Uri URL_APP_REPO = Uri.parse("https://github.com/yarolegovich/DiscreteScrollView");
 
     private View root;
 
@@ -43,6 +46,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.credit_city_icons).setOnClickListener(this);
         findViewById(R.id.credit_shop_photos).setOnClickListener(this);
         findViewById(R.id.credit_taya).setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mi_github:
+                open(URL_APP_REPO);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
