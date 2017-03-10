@@ -141,7 +141,7 @@ public class DiscreteScrollView extends RecyclerView {
     }
 
     public interface CurrentItemChangeListener<T extends ViewHolder> {
-        /**
+        /*
          * This method will be also triggered when view appears on the screen for the first time.
          */
         void onCurrentItemChanged(T viewHolder, int adapterPosition);

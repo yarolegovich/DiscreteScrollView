@@ -7,9 +7,9 @@ fully visible on the screen (I've tried to use ViewPager for this purpose and, p
 ![GifSampleShop](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_shop.gif)
 
 ## Gradle 
-Add this into your dependencies block. (May be not added to jCenter() yet).
+Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.0.1'
+compile 'com.yarolegovich:discrete-scrollview:1.0.3'
 ```
 ## Sample
 Please see the [sample app] (https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage. 
