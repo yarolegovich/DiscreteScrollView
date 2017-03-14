@@ -1,8 +1,7 @@
 # DiscreteScrollView
 
 The library is a RecyclerView-based implementation of a scrollable list, where current item is centered and can be changed using swipes.
-It is similar to a ViewPager, but you can painleslly create layout, where views adjacent to the currently selected view are partially or 
-fully visible on the screen (I've tried to use ViewPager for this purpose and, please, don't repeat my mistakes - better use this library!).
+It is similar to a ViewPager, but you can quickly and painlessly create layout, where views adjacent to the currently selected view are partially or fully visible on the screen. 
 
 ![GifSampleShop](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_shop.gif)
 
