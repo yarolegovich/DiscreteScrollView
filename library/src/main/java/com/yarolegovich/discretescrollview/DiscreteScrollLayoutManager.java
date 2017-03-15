@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
@@ -50,15 +51,17 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> detachedCache;
 
+    @NonNull
+    private final ScrollStateListener scrollStateListener;
     private DiscreteScrollItemTransformer itemTransformer;
-    private ScrollStateListener scrollStateListener;
 
-    public DiscreteScrollLayoutManager(Context c) {
+    public DiscreteScrollLayoutManager(Context c, @NonNull ScrollStateListener scrollStateListener) {
         this.context = c;
         this.timeForItemSettle = DEFAULT_TIME_FOR_ITEM_SETTLE;
         this.pendingPosition = NO_POSITION;
         this.currentPosition = NO_POSITION;
         this.detachedCache = new SparseArray<>();
+        this.scrollStateListener = scrollStateListener;
         setAutoMeasureEnabled(true);
     }
 
@@ -85,7 +88,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         applyItemTransformToChildren();
 
         if (isFirstOrEmptyLayout) {
-            notifyFirstLayoutCompleted();
+            scrollStateListener.onCurrentViewFirstLayout();
         }
     }
 
@@ -289,17 +292,17 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     @Override
     public void onScrollStateChanged(int state) {
         if (currentScrollState == RecyclerView.SCROLL_STATE_IDLE && currentScrollState != state) {
-            notifyScrollStart();
+            scrollStateListener.onScrollStart();
         }
 
         if (state == RecyclerView.SCROLL_STATE_IDLE) {
             //Scroll is not finished until current view is centered
             boolean isScrollEnded = onScrollEnd();
             if (isScrollEnded) {
-                notifyScrollEnd();
+                scrollStateListener.onScrollEnd();
             } else {
                 //Scroll continues and we don't want to set currentScrollState to STATE_IDLE,
-                //because this will then trigger notifyScrollStart()
+                //because this will then trigger .scrollStateListener.onScrollStart()
                 return;
             }
         } else if (state == RecyclerView.SCROLL_STATE_DRAGGING) {
@@ -399,7 +402,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                     scrollToChangeTheCurrent - Math.abs(scrolled) :
                     scrollToChangeTheCurrent + Math.abs(scrolled);
         }
-        notifyBoundReached(isBoundReached);
+        scrollStateListener.onIsBoundReachedFlagChange(isBoundReached);
         return allowedScroll;
     }
 
@@ -444,10 +447,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     public void setItemTransformer(DiscreteScrollItemTransformer itemTransformer) {
         this.itemTransformer = itemTransformer;
-    }
-
-    public void setScrollStateListener(ScrollStateListener boundReachedListener) {
-        this.scrollStateListener = boundReachedListener;
     }
 
     public void setTimeForItemSettle(int timeForItemSettle) {
@@ -495,37 +494,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return getChildAt(getChildCount() - 1);
     }
 
-    private void notifyScrollEnd() {
-        if (scrollStateListener != null) {
-            scrollStateListener.onScrollEnd();
-        }
-    }
-
-    private void notifyScrollStart() {
-        if (scrollStateListener != null) {
-            scrollStateListener.onScrollStart();
-        }
-    }
-
-    private void notifyBoundReached(boolean isReached) {
-        if (scrollStateListener != null) {
-            scrollStateListener.onIsBoundReachedFlagChange(isReached);
-        }
-    }
-
     private void notifyScroll() {
-        if (scrollStateListener != null) {
-            float position = -Math.min(Math.max(-1f,
-                    scrolled / (float) scrollToChangeTheCurrent),
-                    1f);
-            scrollStateListener.onScroll(position);
-        }
-    }
-
-    private void notifyFirstLayoutCompleted() {
-        if (scrollStateListener != null) {
-            scrollStateListener.onCurrentViewFirstLayout();
-        }
+        float position = -Math.min(Math.max(-1f, scrolled / (float) scrollToChangeTheCurrent), 1f);
+        scrollStateListener.onScroll(position);
     }
 
     private class DiscreteLinearSmoothScroller extends LinearSmoothScroller {

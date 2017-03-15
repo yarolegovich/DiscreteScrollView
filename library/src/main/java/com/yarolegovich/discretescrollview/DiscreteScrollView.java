@@ -31,53 +31,7 @@ public class DiscreteScrollView extends RecyclerView {
     }
 
     {
-        layoutManager = new DiscreteScrollLayoutManager(getContext());
-        layoutManager.setScrollStateListener(new DiscreteScrollLayoutManager.ScrollStateListener() {
-            @Override
-            public void onIsBoundReachedFlagChange(boolean isBoundReached) {
-                setOverScrollMode(isBoundReached ? OVER_SCROLL_ALWAYS : OVER_SCROLL_NEVER);
-            }
-
-            @Override
-            public void onScrollStart() {
-                if (scrollStateChangeListener != null) {
-                    int current = layoutManager.getCurrentPosition();
-                    ViewHolder holder = getViewHolder(current);
-                    scrollStateChangeListener.onScrollStart(holder, current);
-                }
-            }
-
-            @Override
-            public void onScrollEnd() {
-                ViewHolder holder = null;
-                int current = layoutManager.getCurrentPosition();
-                if (scrollStateChangeListener != null) {
-                    holder = getViewHolder(current);
-                    scrollStateChangeListener.onScrollEnd(holder, current);
-                }
-                if (currentItemChangeListener != null) {
-                    if (holder == null) {
-                        holder = getViewHolder(current);
-                    }
-                    currentItemChangeListener.onCurrentItemChanged(holder, current);
-                }
-            }
-
-            @Override
-            public void onScroll(float currentViewPosition) {
-                if (scrollStateChangeListener != null) {
-                    scrollStateChangeListener.onScroll(currentViewPosition);
-                }
-            }
-
-            @Override
-            public void onCurrentViewFirstLayout() {
-                if (currentItemChangeListener != null) {
-                    int current = layoutManager.getCurrentPosition();
-                    currentItemChangeListener.onCurrentItemChanged(getViewHolder(current), current);
-                }
-            }
-        });
+        layoutManager = new DiscreteScrollLayoutManager(getContext(), new ScrollStateListener());
         setLayoutManager(layoutManager);
     }
 
@@ -86,9 +40,7 @@ public class DiscreteScrollView extends RecyclerView {
         if (layout instanceof DiscreteScrollLayoutManager) {
             super.setLayoutManager(layout);
         } else {
-            throw new IllegalArgumentException(
-                    "You should not set LayoutManager on DiscreteScrollView.class" +
-                            "instance. Library uses a special one. Just don't call the method.");
+            throw new IllegalArgumentException(getContext().getString(R.string.dsv_ex_msg_dont_set_lm));
         }
     }
 
@@ -122,6 +74,54 @@ public class DiscreteScrollView extends RecyclerView {
 
     public void setCurrentItemChangeListener(CurrentItemChangeListener<?> currentItemChangeListener) {
         this.currentItemChangeListener = currentItemChangeListener;
+    }
+
+    private class ScrollStateListener implements DiscreteScrollLayoutManager.ScrollStateListener {
+
+        @Override
+        public void onIsBoundReachedFlagChange(boolean isBoundReached) {
+            setOverScrollMode(isBoundReached ? OVER_SCROLL_ALWAYS : OVER_SCROLL_NEVER);
+        }
+
+        @Override
+        public void onScrollStart() {
+            if (scrollStateChangeListener != null) {
+                int current = layoutManager.getCurrentPosition();
+                ViewHolder holder = getViewHolder(current);
+                scrollStateChangeListener.onScrollStart(holder, current);
+            }
+        }
+
+        @Override
+        public void onScrollEnd() {
+            ViewHolder holder = null;
+            int current = layoutManager.getCurrentPosition();
+            if (scrollStateChangeListener != null) {
+                holder = getViewHolder(current);
+                scrollStateChangeListener.onScrollEnd(holder, current);
+            }
+            if (currentItemChangeListener != null) {
+                if (holder == null) {
+                    holder = getViewHolder(current);
+                }
+                currentItemChangeListener.onCurrentItemChanged(holder, current);
+            }
+        }
+
+        @Override
+        public void onScroll(float currentViewPosition) {
+            if (scrollStateChangeListener != null) {
+                scrollStateChangeListener.onScroll(currentViewPosition);
+            }
+        }
+
+        @Override
+        public void onCurrentViewFirstLayout() {
+            if (currentItemChangeListener != null) {
+                int current = layoutManager.getCurrentPosition();
+                currentItemChangeListener.onCurrentItemChanged(getViewHolder(current), current);
+            }
+        }
     }
 
     /**
