@@ -8,12 +8,12 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.0.3'
+compile 'com.yarolegovich:discrete-scrollview:1.1.0'
 ```
 ## Sample
 <a href="https://play.google.com/store/apps/details?id=com.yarolegovich.discretescrollview.sample"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="185" height="60"/></a><br>
 
-Please see the [sample app] (https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage. 
+Please see the [sample app] (https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage.
 
 ![GifSampleWeather](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_weather.gif)
 
@@ -33,7 +33,8 @@ If you have ever used RecyclerView - you already know how to use this library. O
 <com.yarolegovich.discretescrollview.DiscreteScrollView
   android:id="@+id/picker"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content" />
+  android:layout_height="wrap_content"
+  app:dsv_orientation="horizontal|vertical" />  <!-- orientation is optional, default is horizontal -->
 ```
 ```java
 DiscreteScrollView scrollView = findViewById(R.id.picker);
@@ -41,6 +42,10 @@ scrollView.setAdapter(new YourAdapterImplementation());
 ```
 
 ### API
+#### Layout
+```java
+scrollView.setOrientation(Orientation o); //Sets an orientation of the view
+```
 #### Related to the current item:
 ```java
 scrollView.getCurrentItem(); //returns adapter position of the currently selected item or -1 if adapter is empty.
@@ -83,7 +88,9 @@ You may see how it works on GIFs.
 scrollView.setScrollStateChangeListener(listener);
 
 public interface ScrollStateChangeListener<T extends ViewHolder> {
+
   void onScrollStart(T currentItemHolder, int adapterPosition); //called when scroll is started, including programatically initiated scroll
+  
   void onScrollEnd(T currentItemHolder, int adapterPosition); //called when scroll ends
   /**
    * Called when scroll is in progress. 
@@ -93,20 +100,31 @@ public interface ScrollStateChangeListener<T extends ViewHolder> {
    * -view1 is on position -1;
    * -currentlySelectedView is on position 0;
    * -view2 is on position 1.
+   * @param currentHolder - ViewHolder of a current view
+   * @param newCurrent - ViewHolder of a view that moved closer to the center
    */
-  void onScroll(float scrollPosition); 
+  void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder); 
+}
+```
+* Scroll:
+```java
+scrollView.setScrollListener(listener);
+
+public interface ScrollListener<T extends ViewHolder> {
+  //The same as ScrollStateChangeListener, but for the cases when you are interested only in onScroll()
+  void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder);
 }
 ```
 * Current selection changes:
 ```java
-scrollView.setCurrentItemChangeListener(listener);
+scrollView.setOnItemChangedListener(listener);
 
-public interface CurrentItemChangeListener<T extends ViewHolder> {
+public interface OnItemChangedListener<T extends ViewHolder> {
   /**
    * Called when new item is selected. It is similar to the onScrollEnd of ScrollStateChangeListener, except that it is 
    * also called when currently selected item appears on the screen for the first time.
    */
-  void onCurrentItemChanged(T viewHolder, int adapterPosition); 
+  void onCurrentItemChanged(@NonNull T viewHolder, int adapterPosition); 
 }
 ```
 
