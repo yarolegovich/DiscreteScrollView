@@ -3,23 +3,17 @@ package com.yarolegovich.discretescrollview.sample;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.sample.gallery.GalleryActivity;
 import com.yarolegovich.discretescrollview.sample.shop.ShopActivity;
 import com.yarolegovich.discretescrollview.sample.weather.WeatherActivity;
-import com.yarolegovich.discretescrollview.transform.Pivot;
-import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

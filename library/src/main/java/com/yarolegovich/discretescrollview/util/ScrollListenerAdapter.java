@@ -27,7 +27,7 @@ public class ScrollListenerAdapter<T extends RecyclerView.ViewHolder> implements
     }
 
     @Override
-    public void onScroll(float scrollPosition, @NonNull T currentHolder, T newCurrentHolder) {
+    public void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder) {
         adaptee.onScroll(scrollPosition, currentHolder, newCurrentHolder);
     }
 }

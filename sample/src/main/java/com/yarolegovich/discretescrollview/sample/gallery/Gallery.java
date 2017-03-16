@@ -1,12 +1,6 @@
 package com.yarolegovich.discretescrollview.sample.gallery;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.yarolegovich.discretescrollview.sample.App;
 import com.yarolegovich.discretescrollview.sample.R;
-import com.yarolegovich.discretescrollview.sample.shop.Item;
-import com.yarolegovich.discretescrollview.sample.shop.Shop;
 
 import java.util.Arrays;
 import java.util.List;

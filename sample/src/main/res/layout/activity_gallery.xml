@@ -10,7 +10,8 @@
         android:id="@+id/item_picker"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/galleryBg" />
+        android:background="@color/galleryBg"
+        app:dsv_orientation="vertical" />
 
     <ImageView
         android:id="@+id/home"

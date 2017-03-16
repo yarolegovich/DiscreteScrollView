@@ -2,7 +2,6 @@ package com.yarolegovich.discretescrollview;
 
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 /**
  * Created by yarolegovich on 16.03.2017.

@@ -1,12 +1,12 @@
 package com.yarolegovich.discretescrollview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
@@ -18,6 +18,8 @@ import com.yarolegovich.discretescrollview.util.ScrollListenerAdapter;
 @SuppressWarnings("unchecked")
 public class DiscreteScrollView extends RecyclerView {
 
+    private static final int DEFAULT_ORIENTATION = Orientation.HORIZONTAL.ordinal();
+
     private DiscreteScrollLayoutManager layoutManager;
 
     private ScrollStateChangeListener scrollStateChangeListener;
@@ -25,20 +27,30 @@ public class DiscreteScrollView extends RecyclerView {
 
     public DiscreteScrollView(Context context) {
         super(context);
+        init(null);
     }
 
     public DiscreteScrollView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(attrs);
     }
 
     public DiscreteScrollView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(attrs);
     }
 
-    {
+    private void init(AttributeSet attrs) {
+        int orientation = DEFAULT_ORIENTATION;
+        if (attrs != null) {
+            TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.DiscreteScrollView);
+            orientation = ta.getInt(R.styleable.DiscreteScrollView_dsv_orientation, DEFAULT_ORIENTATION);
+            ta.recycle();
+        }
+
         layoutManager = new DiscreteScrollLayoutManager(
                 getContext(), new ScrollStateListener(),
-                Orientation.HORIZONTAL);
+                Orientation.values()[orientation]);
         setLayoutManager(layoutManager);
     }
 
@@ -174,7 +186,7 @@ public class DiscreteScrollView extends RecyclerView {
 
         void onScrollEnd(@NonNull T currentItemHolder, int adapterPosition);
 
-        void onScroll(float scrollPosition, @NonNull T currentHolder, T newCurrent);
+        void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrent);
     }
 
     public interface ScrollListener<T extends ViewHolder> {

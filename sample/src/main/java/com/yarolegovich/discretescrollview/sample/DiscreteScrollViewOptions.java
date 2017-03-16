@@ -11,9 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
-import com.yarolegovich.discretescrollview.sample.App;
-import com.yarolegovich.discretescrollview.sample.R;
-import com.yarolegovich.mp.MaterialSeekBarPreference;
 
 import java.lang.ref.WeakReference;
 
