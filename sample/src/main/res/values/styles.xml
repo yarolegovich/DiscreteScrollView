@@ -14,6 +14,10 @@
     <style name="WeatherTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+    
+    <style name="GalleryTheme" parent="AppTheme">
+        <item name="colorAccent">@color/galleryAccent</item>
+    </style>
 
     <style name="ClickableImageView">
         <item name="android:clickable">true</item>

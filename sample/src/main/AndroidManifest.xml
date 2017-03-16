@@ -9,7 +9,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +21,14 @@
             android:name=".shop.ShopActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ShopTheme" />
-
         <activity
             android:name=".weather.WeatherActivity"
             android:screenOrientation="portrait"
             android:theme="@style/WeatherTheme" />
 
+        <activity
+            android:theme="@style/GalleryTheme"
+            android:name=".gallery.GalleryActivity"/>
     </application>
 
 </manifest>

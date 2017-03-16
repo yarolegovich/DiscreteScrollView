@@ -11,6 +11,12 @@
     <color name="shopRatedStar">#ffeb5a</color>
     <color name="shopFabRipple">#51b2ac</color>
 
+    <color name="galleryBg">#212121</color>
+    <color name="galleryCurrentItemOverlay">@android:color/transparent</color>
+    <color name="galleryItemOverlay">#cc000000</color>
+    <color name="galleryEdgeEffect">#b4ffffff</color>
+    <color name="galleryAccent">#FFC107</color>
+
     <color name="weatherAccent">#84ceca</color>
 
     <color name="gradientPeriodicClouds_c1">#3453d1</color>

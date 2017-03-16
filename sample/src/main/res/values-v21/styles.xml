@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <style name="GalleryTheme" parent="AppTheme">
+        <item name="colorAccent">@color/galleryAccent</item>
+        <item name="android:colorEdgeEffect">@color/galleryEdgeEffect</item>
+    </style>
+
     <style name="ClickableImageView">
         <item name="android:clickable">true</item>
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>

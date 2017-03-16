@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.sample.gallery.GalleryActivity;
 import com.yarolegovich.discretescrollview.sample.shop.ShopActivity;
 import com.yarolegovich.discretescrollview.sample.weather.WeatherActivity;
 import com.yarolegovich.discretescrollview.transform.Pivot;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.preview_shop).setOnClickListener(this);
         findViewById(R.id.preview_weather).setOnClickListener(this);
+        findViewById(R.id.preview_vertical).setOnClickListener(this);
 
         findViewById(R.id.credit_city_icons).setOnClickListener(this);
         findViewById(R.id.credit_shop_photos).setOnClickListener(this);
@@ -72,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.preview_weather:
                 start(WeatherActivity.class);
+                break;
+            case R.id.preview_vertical:
+                start(GalleryActivity.class);
                 break;
             case R.id.credit_city_icons:
                 open(URL_CITY_ICONS);

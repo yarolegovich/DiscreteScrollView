@@ -35,6 +35,14 @@
             app:mp_icon_tint="@color/grayIconTint"
             app:mp_title="@string/preview_title_small_cards" />
 
+        <com.yarolegovich.mp.MaterialRightIconPreference
+            android:id="@+id/preview_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_icon="@drawable/ic_collections_black_24dp"
+            app:mp_icon_tint="@color/grayIconTint"
+            app:mp_title="@string/preview_title_vertical" />
+
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory

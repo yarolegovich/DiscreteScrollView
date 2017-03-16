@@ -1,6 +1,7 @@
 package com.yarolegovich.discretescrollview.sample.shop;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.Orientation;
 import com.yarolegovich.discretescrollview.sample.DiscreteScrollViewOptions;
 import com.yarolegovich.discretescrollview.sample.R;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
@@ -21,7 +23,7 @@ import java.util.List;
  * Created by yarolegovich on 07.03.2017.
  */
 
-public class ShopActivity extends AppCompatActivity implements DiscreteScrollView.CurrentItemChangeListener,
+public class ShopActivity extends AppCompatActivity implements DiscreteScrollView.OnItemChangedListener,
         View.OnClickListener {
 
     private List<Item> data;
@@ -44,7 +46,8 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         shop = Shop.get();
         data = shop.getData();
         itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
-        itemPicker.setCurrentItemChangeListener(this);
+        itemPicker.setOrientation(Orientation.HORIZONTAL);
+        itemPicker.setOnItemChangedListener(this);
         itemPicker.setAdapter(new ShopAdapter(data));
         itemPicker.setItemTransitionTimeMillis(DiscreteScrollViewOptions.getTransitionTime());
         itemPicker.setItemTransformer(new ScaleTransformer.Builder()
@@ -102,7 +105,7 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     }
 
     @Override
-    public void onCurrentItemChanged(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         onItemChanged(data.get(position));
     }
 
