@@ -13,7 +13,7 @@ compile 'com.yarolegovich:discrete-scrollview:1.1.0'
 ## Sample
 <a href="https://play.google.com/store/apps/details?id=com.yarolegovich.discretescrollview.sample"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="185" height="60"/></a><br>
 
-Please see the [sample app] (https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage.
+Please see the [sample app](https://github.com/yarolegovich/DiscreteScrollView/tree/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample) for examples of library usage.
 
 ![GifSampleWeather](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_weather.gif)
 
@@ -26,7 +26,7 @@ If you have ever used RecyclerView - you already know how to use this library. O
 
 #### Usage:
  1. Add DiscreteScrollView to your layout either using xml or code:
- 2. Create your implementation of RecyclerView.Adapter. Refer to the [sample] (https://github.com/yarolegovich/DiscreteScrollView/blob/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample/shop/ShopAdapter.java) for an example, if you don't know how to do it.
+ 2. Create your implementation of RecyclerView.Adapter. Refer to the [sample](https://github.com/yarolegovich/DiscreteScrollView/blob/master/sample/src/main/java/com/yarolegovich/discretescrollview/sample/shop/ShopAdapter.java) for an example, if you don't know how to do it.
  3. Set the adapter.
  4. You are done! 
 ```xml
@@ -129,7 +129,7 @@ public interface OnItemChangedListener<T extends ViewHolder> {
 ```
 
 ## Special thanks
-Thanks to [Tayisiya Yurkiv] (https://www.behance.net/yurkivt) for sample app design and beautiful GIFs.
+Thanks to [Tayisiya Yurkiv](https://www.behance.net/yurkivt) for sample app design and beautiful GIFs.
 
 ## License
 ```
