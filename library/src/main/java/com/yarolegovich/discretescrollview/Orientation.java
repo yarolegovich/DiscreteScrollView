@@ -2,6 +2,7 @@ package com.yarolegovich.discretescrollview;
 
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 /**
  * Created by yarolegovich on 16.03.2017.
@@ -10,21 +11,21 @@ public enum Orientation {
 
     HORIZONTAL {
         @Override
-        OrientationHelper createHelper() {
+        Helper createHelper() {
             return new HorizontalHelper();
         }
     },
     VERTICAL {
         @Override
-        OrientationHelper createHelper() {
+        Helper createHelper() {
             return new VerticalHelper();
         }
     };
 
     //Package private
-    abstract OrientationHelper createHelper();
+    abstract Helper createHelper();
 
-    interface OrientationHelper {
+    interface Helper {
 
         int getViewEnd(int recyclerWidth, int recyclerHeight);
 
@@ -46,12 +47,14 @@ public enum Orientation {
 
         boolean isViewVisible(Point center, int halfWidth, int halfHeight, int endBound);
 
+        boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm);
+
         boolean canScrollVertically();
 
         boolean canScrollHorizontally();
     }
 
-    protected static class HorizontalHelper implements OrientationHelper {
+    protected static class HorizontalHelper implements Helper {
 
         @Override
         public int getViewEnd(int recyclerWidth, int recyclerHeight) {
@@ -65,23 +68,31 @@ public enum Orientation {
 
         @Override
         public void setCurrentViewCenter(Point recyclerCenter, int scrolled, Point outPoint) {
-            outPoint.set(
-                    recyclerCenter.x - scrolled,
-                    recyclerCenter.y);
+            int newX = recyclerCenter.x - scrolled;
+            outPoint.set(newX, recyclerCenter.y);
         }
 
         @Override
         public void shiftViewCenter(Direction direction, int shiftAmount, Point outCenter) {
-            outCenter.set(
-                    outCenter.x + direction.applyTo(shiftAmount),
-                    outCenter.y);
+            int newX = outCenter.x + direction.applyTo(shiftAmount);
+            outCenter.set(newX, outCenter.y);
         }
 
         @Override
         public boolean isViewVisible(Point viewCenter, int halfWidth, int halfHeight, int endBound) {
             int viewLeft = viewCenter.x - halfWidth;
-            int viewRight = viewCenter.y + halfWidth;
-            return viewLeft < endBound || viewRight > 0;
+            int viewRight = viewCenter.x + halfWidth;
+            return viewLeft < endBound && viewRight > 0;
+        }
+
+        @Override
+        public boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm) {
+            View firstChild = lm.getFirstChild(), lastChild = lm.getLastChild();
+            boolean isNewVisibleFromLeft = lm.getDecoratedLeft(firstChild) > 0
+                    && lm.getPosition(firstChild) > 0;
+            boolean isNewVisibleFromRight = lm.getDecoratedRight(lastChild) < lm.getWidth()
+                    && lm.getPosition(lastChild) < lm.getItemCount() - 1;
+            return isNewVisibleFromLeft || isNewVisibleFromRight;
         }
 
         @Override
@@ -121,7 +132,7 @@ public enum Orientation {
     }
 
 
-    protected static class VerticalHelper implements OrientationHelper {
+    protected static class VerticalHelper implements Helper {
 
         @Override
         public int getViewEnd(int recyclerWidth, int recyclerHeight) {
@@ -135,18 +146,15 @@ public enum Orientation {
 
         @Override
         public void setCurrentViewCenter(Point recyclerCenter, int scrolled, Point outPoint) {
-            outPoint.set(
-                    recyclerCenter.x,
-                    recyclerCenter.y - scrolled);
+            int newY = recyclerCenter.y - scrolled;
+            outPoint.set(recyclerCenter.x, newY);
         }
 
         @Override
         public void shiftViewCenter(Direction direction, int shiftAmount, Point outCenter) {
-            outCenter.set(
-                    outCenter.x,
-                    outCenter.y + direction.applyTo(shiftAmount));
+            int newY = outCenter.y + direction.applyTo(shiftAmount);
+            outCenter.set(outCenter.x, newY);
         }
-
 
         @Override
         public void offsetChildren(int amount, RecyclerView.LayoutManager lm) {
@@ -160,9 +168,19 @@ public enum Orientation {
 
         @Override
         public boolean isViewVisible(Point viewCenter, int halfWidth, int halfHeight, int endBound) {
-            int viewTop = viewCenter.x - halfHeight;
+            int viewTop = viewCenter.y - halfHeight;
             int viewBottom = viewCenter.y + halfHeight;
-            return viewTop < endBound || viewBottom > 0;
+            return viewTop < endBound && viewBottom > 0;
+        }
+
+        @Override
+        public boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm) {
+            View firstChild = lm.getFirstChild(), lastChild = lm.getLastChild();
+            boolean isNewVisibleFromTop = lm.getDecoratedTop(firstChild) > 0
+                    && lm.getPosition(firstChild) > 0;
+            boolean isNewVisibleFromBottom = lm.getDecoratedBottom(lastChild) < lm.getHeight()
+                    && lm.getPosition(lastChild) < lm.getItemCount() - 1;
+            return isNewVisibleFromTop || isNewVisibleFromBottom;
         }
 
         @Override

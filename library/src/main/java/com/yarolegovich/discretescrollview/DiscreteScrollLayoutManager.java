@@ -38,7 +38,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private int scrollToChangeCurrent;
     private int currentScrollState;
 
-    private Orientation.OrientationHelper orientationHelper;
+    private Orientation.Helper orientationHelper;
 
     private int scrolled;
     private int pendingScroll;
@@ -126,29 +126,30 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         orientationHelper.setCurrentViewCenter(recyclerCenter, scrolled, currentViewCenter);
 
+        final int endBound = orientationHelper.getViewEnd(getWidth(), getHeight());
+
         //Layout current
-        layoutView(recycler, currentPosition, currentViewCenter);
+        if (isViewVisible(currentViewCenter, endBound)) {
+            layoutView(recycler, currentPosition, currentViewCenter);
+        }
 
         //Layout items before the current item
-        layoutViews(recycler, Direction.START);
+        layoutViews(recycler, Direction.START, endBound);
 
         //Layout items after the current item
-        layoutViews(recycler, Direction.END);
+        layoutViews(recycler, Direction.END, endBound);
 
         recycleViewsAndClearCache(recycler);
     }
 
-    private void layoutViews(RecyclerView.Recycler recycler, Direction direction) {
+    private void layoutViews(RecyclerView.Recycler recycler, Direction direction, int endBound) {
         final int positionStep = direction.applyTo(1);
-        final int endBound = orientationHelper.getViewEnd(getWidth(), getHeight());
 
         viewCenterIterator.set(currentViewCenter.x, currentViewCenter.y);
         for (int i = currentPosition + positionStep; isInBounds(i); i += positionStep) {
             orientationHelper.shiftViewCenter(direction, scrollToChangeCurrent, viewCenterIterator);
             if (isViewVisible(viewCenterIterator, endBound)) {
                 layoutView(recycler, i, viewCenterIterator);
-            } else {
-                break;
             }
         }
     }
@@ -182,7 +183,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private void recycleViewsAndClearCache(RecyclerView.Recycler recycler) {
         for (int i = 0; i < detachedCache.size(); i++) {
-            recycler.recycleView(detachedCache.valueAt(i));
+            View viewToRemove = detachedCache.valueAt(i);
+            recycler.recycleView(viewToRemove);
         }
         detachedCache.clear();
     }
@@ -240,13 +242,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         orientationHelper.offsetChildren(-delta, this);
 
-        View firstChild = getFirstChild(), lastChild = getLastChild();
-        boolean isNewVisibleFromLeft = getDecoratedLeft(firstChild) > 0
-                && getPosition(firstChild) > 0;
-        boolean isNewVisibleFromRight = getDecoratedRight(lastChild) < getWidth()
-                && getPosition(lastChild) < getItemCount() - 1;
-
-        if (isNewVisibleFromLeft || isNewVisibleFromRight) {
+        if (orientationHelper.hasNewBecomeVisible(this)) {
             fill(recycler);
         }
 
@@ -501,11 +497,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return Math.abs(scrolled) >= scrollToChangeCurrent * 0.6f;
     }
 
-    private View getFirstChild() {
+    public View getFirstChild() {
         return getChildAt(0);
     }
 
-    private View getLastChild() {
+    public View getLastChild() {
         return getChildAt(getChildCount() - 1);
     }
 
