@@ -132,21 +132,21 @@ public class DiscreteScrollView extends RecyclerView {
 
         @Override
         public void onScrollEnd() {
-            ViewHolder holder = null;
-            int current = layoutManager.getCurrentPosition();
+            ViewHolder currentHolder = null;
+            int currentHolder = layoutManager.getCurrentPosition();
             if (scrollStateChangeListener != null) {
-                holder = getViewHolder(current);
+                holder = getViewHolder(currentHolder);
                 if (holder == null) {
                     return;
                 }
-                scrollStateChangeListener.onScrollEnd(holder, current);
+                scrollStateChangeListener.onScrollEnd(holder, currentHolder);
             }
             if (onItemChangedListener != null) {
                 if (holder == null) {
-                    holder = getViewHolder(current);
+                    holder = getViewHolder(currentHolder);
                 }
                 if (holder != null) {
-                    onItemChangedListener.onCurrentItemChanged(holder, current);
+                    onItemChangedListener.onCurrentItemChanged(holder, currentHolder);
                 }
             }
         }
@@ -172,9 +172,9 @@ public class DiscreteScrollView extends RecyclerView {
         public void onCurrentViewFirstLayout() {
             if (onItemChangedListener != null) {
                 int current = layoutManager.getCurrentPosition();
-                ViewHolder currentHolder = getViewHolder(current);
-                if (currentHolder != null) {
-                    onItemChangedListener.onCurrentItemChanged(currentHolder, current);
+                ViewHolder holder = getViewHolder(current);
+                if (holder != null) {
+                    onItemChangedListener.onCurrentItemChanged(holder, current);
                 }
             }
         }
