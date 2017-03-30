@@ -194,7 +194,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (currentPosition == NO_POSITION) {
             currentPosition = 0;
         } else if (currentPosition >= positionStart) {
-            currentPosition += itemCount;
+            currentPosition = Math.min(currentPosition + itemCount, getItemCount() - 1);
         }
     }
 
