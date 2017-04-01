@@ -45,7 +45,7 @@ public enum Orientation {
 
         float getDistanceFromCenter(Point center, int viewCenterX, int viewCenterY);
 
-        boolean isViewVisible(Point center, int halfWidth, int halfHeight, int endBound);
+        boolean isViewVisible(Point center, int halfWidth, int halfHeight, int endBound, int extraSpace);
 
         boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm);
 
@@ -79,18 +79,22 @@ public enum Orientation {
         }
 
         @Override
-        public boolean isViewVisible(Point viewCenter, int halfWidth, int halfHeight, int endBound) {
+        public boolean isViewVisible(
+                Point viewCenter, int halfWidth, int halfHeight, int endBound,
+                int extraSpace) {
             int viewLeft = viewCenter.x - halfWidth;
             int viewRight = viewCenter.x + halfWidth;
-            return viewLeft < endBound && viewRight > 0;
+            return viewLeft < (endBound + extraSpace) && viewRight > -extraSpace;
         }
 
         @Override
         public boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm) {
             View firstChild = lm.getFirstChild(), lastChild = lm.getLastChild();
-            boolean isNewVisibleFromLeft = lm.getDecoratedLeft(firstChild) > 0
+            int leftBound = -lm.getExtraLayoutSpace();
+            int rightBound = lm.getWidth() + lm.getExtraLayoutSpace();
+            boolean isNewVisibleFromLeft = lm.getDecoratedLeft(firstChild) > leftBound
                     && lm.getPosition(firstChild) > 0;
-            boolean isNewVisibleFromRight = lm.getDecoratedRight(lastChild) < lm.getWidth()
+            boolean isNewVisibleFromRight = lm.getDecoratedRight(lastChild) < rightBound
                     && lm.getPosition(lastChild) < lm.getItemCount() - 1;
             return isNewVisibleFromLeft || isNewVisibleFromRight;
         }
@@ -167,18 +171,22 @@ public enum Orientation {
         }
 
         @Override
-        public boolean isViewVisible(Point viewCenter, int halfWidth, int halfHeight, int endBound) {
+        public boolean isViewVisible(
+                Point viewCenter, int halfWidth, int halfHeight, int endBound,
+                int extraSpace) {
             int viewTop = viewCenter.y - halfHeight;
             int viewBottom = viewCenter.y + halfHeight;
-            return viewTop < endBound && viewBottom > 0;
+            return viewTop < (endBound + extraSpace) && viewBottom > -extraSpace;
         }
 
         @Override
         public boolean hasNewBecomeVisible(DiscreteScrollLayoutManager lm) {
             View firstChild = lm.getFirstChild(), lastChild = lm.getLastChild();
-            boolean isNewVisibleFromTop = lm.getDecoratedTop(firstChild) > 0
+            int topBound = -lm.getExtraLayoutSpace();
+            int bottomBound = lm.getHeight() + lm.getExtraLayoutSpace();
+            boolean isNewVisibleFromTop = lm.getDecoratedTop(firstChild) > topBound
                     && lm.getPosition(firstChild) > 0;
-            boolean isNewVisibleFromBottom = lm.getDecoratedBottom(lastChild) < lm.getHeight()
+            boolean isNewVisibleFromBottom = lm.getDecoratedBottom(lastChild) < bottomBound
                     && lm.getPosition(lastChild) < lm.getItemCount() - 1;
             return isNewVisibleFromTop || isNewVisibleFromBottom;
         }

@@ -100,6 +100,10 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setOrientation(orientation);
     }
 
+    public void setOffscreenItems(int items) {
+        layoutManager.setOffscreenItems(items);
+    }
+
     public void setScrollStateChangeListener(ScrollStateChangeListener<?> scrollStateChangeListener) {
         this.scrollStateChangeListener = scrollStateChangeListener;
     }

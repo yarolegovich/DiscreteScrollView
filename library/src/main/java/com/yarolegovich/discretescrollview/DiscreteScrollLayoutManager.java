@@ -33,6 +33,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private Point recyclerCenter;
     private Point currentViewCenter;
     private int childHalfWidth, childHalfHeight;
+    private int extraLayoutSpace;
 
     //Max possible distance a view can travel during one scroll phase
     private int scrollToChangeCurrent;
@@ -48,6 +49,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private Context context;
 
     private int timeForItemSettle;
+    private int offscreenItems;
 
     private SparseArray<View> detachedCache;
 
@@ -113,6 +115,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         scrollToChangeCurrent = orientationHelper.getDistanceToChangeCurrent(
                 childViewWidth,
                 childViewHeight);
+
+        extraLayoutSpace = scrollToChangeCurrent * offscreenItems;
 
         detachAndScrapView(viewToMeasure, recycler);
     }
@@ -462,6 +466,12 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         this.timeForItemSettle = timeForItemSettle;
     }
 
+    public void setOffscreenItems(int offscreenItems) {
+        this.offscreenItems = offscreenItems;
+        extraLayoutSpace = scrollToChangeCurrent * offscreenItems;
+        requestLayout();
+    }
+
     public void setOrientation(Orientation orientation) {
         orientationHelper = orientation.createHelper();
         removeAllViews();
@@ -505,6 +515,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return getChildAt(getChildCount() - 1);
     }
 
+    public int getExtraLayoutSpace() {
+        return extraLayoutSpace;
+    }
+
     private void notifyScroll() {
         float position = -Math.min(Math.max(-1f, scrolled / (float) scrollToChangeCurrent), 1f);
         scrollStateListener.onScroll(position);
@@ -517,7 +531,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private boolean isViewVisible(Point viewCenter, int endBound) {
         return orientationHelper.isViewVisible(
                 viewCenter, childHalfWidth, childHalfHeight,
-                endBound);
+                endBound, extraLayoutSpace);
     }
 
     private class DiscreteLinearSmoothScroller extends LinearSmoothScroller {
