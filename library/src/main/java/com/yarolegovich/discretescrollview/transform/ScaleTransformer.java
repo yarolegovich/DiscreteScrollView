@@ -12,15 +12,13 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
     private Pivot pivotX;
     private Pivot pivotY;
     private float minScale;
-    private float maxScale;
     private float maxMinDiff;
 
     public ScaleTransformer() {
         pivotX = Pivot.X.CENTER.create();
         pivotY = Pivot.Y.CENTER.create();
         minScale = 0.8f;
-        maxScale = 1f;
-        maxMinDiff = maxScale - minScale;
+        maxMinDiff = 0.2f;
     }
 
     @Override
@@ -36,9 +34,11 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
     public static class Builder {
 
         private ScaleTransformer transformer;
+        private float maxScale;
 
         public Builder() {
             transformer = new ScaleTransformer();
+            maxScale = 1f;
         }
 
         public Builder setMinScale(@FloatRange(from = 0.01) float scale) {
@@ -47,7 +47,7 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
         }
 
         public Builder setMaxScale(@FloatRange(from = 0.01) float scale) {
-            transformer.maxMinDiff = scale;
+            maxScale = scale;
             return this;
         }
 
@@ -72,7 +72,7 @@ public class ScaleTransformer implements DiscreteScrollItemTransformer {
         }
 
         public ScaleTransformer build() {
-            transformer.maxMinDiff = transformer.maxScale - transformer.minScale;
+            transformer.maxMinDiff = maxScale - transformer.minScale;
             return transformer;
         }
 

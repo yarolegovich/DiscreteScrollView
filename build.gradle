@@ -23,6 +23,6 @@ ext {
     groupId = 'com.yarolegovich'
     uploadName = 'DiscreteScrollView'
     description = 'Scrollable list of items, where current item is centered and can be changed using swipes.'
-    publishVersion = '1.1.3'
+    publishVersion = '1.1.4'
     licences = ['Apache-2.0']
 }
