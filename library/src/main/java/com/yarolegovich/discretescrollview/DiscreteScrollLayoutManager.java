@@ -159,16 +159,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void layoutView(RecyclerView.Recycler recycler, int position, Point viewCenter) {
-        View v = detachedCache.get(position);
-        if (v == null) {
-            v = recycler.getViewForPosition(position);
-            addView(v);
-            measureChildWithMargins(v, 0, 0);
-            layoutDecoratedWithMargins(v,
+        View viewToMeasure = detachedCache.get(position);
+        if (viewToMeasure == null) {
+            viewToMeasure = recycler.getViewForPosition(position);
+            addView(viewToMeasure);
+            measureChildWithMargins(viewToMeasure, 0, 0);
+            layoutDecoratedWithMargins(viewToMeasure,
                     viewCenter.x - childHalfWidth, viewCenter.y - childHalfHeight,
                     viewCenter.x + childHalfWidth, viewCenter.y + childHalfHeight);
         } else {
-            attachView(v);
+            attachView(viewToMeasure);
             detachedCache.remove(position);
         }
     }
@@ -333,9 +333,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             scrolled = 0;
         }
 
-        Direction scrollDirection = Direction.fromDelta(scrolled);
+        Direction direction = Direction.fromDelta(scrolled);
         if (Math.abs(scrolled) == scrollToChangeCurrent) {
-            currentPosition += scrollDirection.applyTo(1);
+            currentPosition += direction.applyTo(1);
             scrolled = 0;
         }
 
@@ -364,8 +364,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             scrolled -= scrolledPositions * scrollToChangeCurrent;
         }
         if (isAnotherItemCloserThanCurrent()) {
-            Direction direction = Direction.fromDelta(scrolled);
-            currentPosition += direction.applyTo(1);
+            Direction scrollDirection = Direction.fromDelta(scrolled);
+            currentPosition += scrollDirection.applyTo(1);
             scrolled = -getHowMuchIsLeftToScroll(scrolled);
         }
         pendingPosition = NO_POSITION;
