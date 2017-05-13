@@ -11,6 +11,7 @@ import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,9 @@ import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransform
  */
 class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
-    private static final String EXTRA_POSITION = "extra_position";
+    static final int NO_POSITION = -1;
 
-    private static final int NO_POSITION = -1;
+    private static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 150;
 
     //This field will take value of all visible view's center points during the fill phase
@@ -53,12 +54,15 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private SparseArray<View> detachedCache;
 
+    private boolean dataSetChangeShiftedPosition;
+    private boolean isFirstOrEmptyLayout;
+
     @NonNull
     private final ScrollStateListener scrollStateListener;
     private DiscreteScrollItemTransformer itemTransformer;
 
     public DiscreteScrollLayoutManager(
-            Context c,
+            @NonNull Context c,
             @NonNull ScrollStateListener scrollStateListener,
             @NonNull Orientation orientation) {
         this.context = c;
@@ -83,9 +87,13 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
 
-        boolean isFirstOrEmptyLayout = getChildCount() == 0;
-        if (isFirstOrEmptyLayout) {
-            initChildDimensions(recycler);
+        //onLayoutChildren may be called multiple times and this check is required so that the flag
+        //won't be cleared until onLayoutCompleted
+        if (!isFirstOrEmptyLayout) {
+            isFirstOrEmptyLayout = getChildCount() == 0;
+            if (isFirstOrEmptyLayout) {
+                initChildDimensions(recycler);
+            }
         }
 
         updateRecyclerDimensions();
@@ -95,9 +103,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         fill(recycler);
 
         applyItemTransformToChildren();
+    }
 
+    @Override
+    public void onLayoutCompleted(RecyclerView.State state) {
         if (isFirstOrEmptyLayout) {
             scrollStateListener.onCurrentViewFirstLayout();
+            isFirstOrEmptyLayout = false;
+        } else if (dataSetChangeShiftedPosition) {
+            scrollStateListener.onDataSetChangeChangedPosition();
+            dataSetChangeShiftedPosition = false;
         }
     }
 
@@ -149,11 +164,19 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private void layoutViews(RecyclerView.Recycler recycler, Direction direction, int endBound) {
         final int positionStep = direction.applyTo(1);
 
+        boolean noPredictiveLayoutRequired = pendingPosition == NO_POSITION
+                || !direction.sameAs(pendingPosition - currentPosition);
+
         viewCenterIterator.set(currentViewCenter.x, currentViewCenter.y);
-        for (int i = currentPosition + positionStep; isInBounds(i); i += positionStep) {
+        for (int pos = currentPosition + positionStep; isInBounds(pos); pos += positionStep) {
+            if (pos == pendingPosition) {
+                noPredictiveLayoutRequired = true;
+            }
             orientationHelper.shiftViewCenter(direction, scrollToChangeCurrent, viewCenterIterator);
             if (isViewVisible(viewCenterIterator, endBound)) {
-                layoutView(recycler, i, viewCenterIterator);
+                layoutView(recycler, pos, viewCenterIterator);
+            } else if (noPredictiveLayoutRequired) {
+                break;
             }
         }
     }
@@ -195,26 +218,42 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+        int newPosition = currentPosition;
         if (currentPosition == NO_POSITION) {
-            currentPosition = 0;
+            newPosition = 0;
         } else if (currentPosition >= positionStart) {
-            currentPosition = Math.min(currentPosition + itemCount, getItemCount() - 1);
+            newPosition = Math.min(currentPosition + itemCount, getItemCount() - 1);
         }
+        onNewPosition(newPosition);
     }
 
     @Override
     public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+        int newPosition = currentPosition;
         if (getItemCount() == 0) {
-            currentPosition = NO_POSITION;
+            newPosition = NO_POSITION;
         } else if (currentPosition >= positionStart) {
-            currentPosition = Math.max(0, currentPosition - itemCount);
+            if (currentPosition < positionStart + itemCount) {
+                //If currentPosition is in the removed items, then the new item became current
+                currentPosition = NO_POSITION;
+            }
+            newPosition = Math.max(0, currentPosition - itemCount);
         }
+        onNewPosition(newPosition);
     }
 
     @Override
     public void onItemsChanged(RecyclerView recyclerView) {
         //notifyDataSetChanged() was called. We need to ensure that currentPosition is not out of bounds
         currentPosition = Math.min(Math.max(0, currentPosition), getItemCount() - 1);
+        dataSetChangeShiftedPosition = true;
+    }
+
+    private void onNewPosition(int position) {
+        if (currentPosition != position) {
+            currentPosition = position;
+            dataSetChangeShiftedPosition = true;
+        }
     }
 
     @Override
@@ -575,6 +614,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         void onScroll(float currentViewPosition);
 
         void onCurrentViewFirstLayout();
+
+        void onDataSetChangeChangedPosition();
     }
 
 }
