@@ -3,6 +3,7 @@ package com.yarolegovich.discretescrollview.sample.gallery;
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -35,8 +36,8 @@ public class GalleryActivity extends AppCompatActivity implements
         List<Image> data = gallery.getData();
         DiscreteScrollView itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
         itemPicker.setAdapter(new GalleryAdapter(data));
-        itemPicker.setScrollListener(this);
-        itemPicker.setOnItemChangedListener(this);
+        itemPicker.addScrollListener(this);
+        itemPicker.addOnItemChangedListener(this);
         itemPicker.scrollToPosition(1);
 
         findViewById(R.id.home).setOnClickListener(this);
@@ -66,8 +67,11 @@ public class GalleryActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCurrentItemChanged(@NonNull GalleryAdapter.ViewHolder viewHolder, int adapterPosition) {
-        viewHolder.setOverlayColor(currentOverlayColor);
+    public void onCurrentItemChanged(@Nullable GalleryAdapter.ViewHolder viewHolder, int adapterPosition) {
+        //viewHolder will never be null, because we never remove items from adapter's list
+        if (viewHolder != null) {
+            viewHolder.setOverlayColor(currentOverlayColor);
+        }
     }
 
     private void share(View view) {

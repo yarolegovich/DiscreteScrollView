@@ -47,7 +47,7 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         data = shop.getData();
         itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
         itemPicker.setOrientation(Orientation.HORIZONTAL);
-        itemPicker.setOnItemChangedListener(this);
+        itemPicker.addOnItemChangedListener(this);
         itemPicker.setAdapter(new ShopAdapter(data));
         itemPicker.setItemTransitionTimeMillis(DiscreteScrollViewOptions.getTransitionTime());
         itemPicker.setItemTransformer(new ScaleTransformer.Builder()
@@ -105,7 +105,7 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     }
 
     @Override
-    public void onCurrentItemChanged(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int position) {
         onItemChanged(data.get(position));
     }
 

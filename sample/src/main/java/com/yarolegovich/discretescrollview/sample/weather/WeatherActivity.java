@@ -37,8 +37,8 @@ public class WeatherActivity extends AppCompatActivity implements
         forecasts = WeatherStation.get().getForecasts();
         cityPicker = (DiscreteScrollView) findViewById(R.id.forecast_city_picker);
         cityPicker.setAdapter(new ForecastAdapter(forecasts));
-        cityPicker.setOnItemChangedListener(this);
-        cityPicker.setScrollStateChangeListener(this);
+        cityPicker.addOnItemChangedListener(this);
+        cityPicker.addScrollStateChangeListener(this);
         cityPicker.scrollToPosition(2);
         cityPicker.setItemTransitionTimeMillis(DiscreteScrollViewOptions.getTransitionTime());
         cityPicker.setItemTransformer(new ScaleTransformer.Builder()
@@ -53,9 +53,12 @@ public class WeatherActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onCurrentItemChanged(@NonNull ForecastAdapter.ViewHolder holder, int position) {
-        forecastView.setForecast(forecasts.get(position));
-        holder.showText();
+    public void onCurrentItemChanged(@Nullable ForecastAdapter.ViewHolder holder, int position) {
+        //viewHolder will never be null, because we never remove items from adapter's list
+        if (holder != null) {
+            forecastView.setForecast(forecasts.get(position));
+            holder.showText();
+        }
     }
 
     @Override
