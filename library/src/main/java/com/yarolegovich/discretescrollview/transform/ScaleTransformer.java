@@ -6,8 +6,7 @@ import android.view.View;
 /**
  * Created by yarolegovich on 03.03.2017.
  */
-
-public class ScaleTransformer implements DiscreteScrollItemTransformer {
+public class  ScaleTransformer implements DiscreteScrollItemTransformer {
 
     private Pivot pivotX;
     private Pivot pivotY;

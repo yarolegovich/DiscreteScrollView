@@ -12,7 +12,7 @@ public class ScrollListenerAdapter<T extends RecyclerView.ViewHolder> implements
 
     private DiscreteScrollView.ScrollListener<T> adaptee;
 
-    public ScrollListenerAdapter(DiscreteScrollView.ScrollListener<T> adaptee) {
+    public ScrollListenerAdapter(@NonNull DiscreteScrollView.ScrollListener<T> adaptee) {
         this.adaptee = adaptee;
     }
 
@@ -29,5 +29,14 @@ public class ScrollListenerAdapter<T extends RecyclerView.ViewHolder> implements
     @Override
     public void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder) {
         adaptee.onScroll(scrollPosition, currentHolder, newCurrentHolder);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ScrollListenerAdapter) {
+            return adaptee.equals(((ScrollListenerAdapter) obj).adaptee);
+        } else {
+            return super.equals(obj);
+        }
     }
 }
