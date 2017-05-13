@@ -8,8 +8,9 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.1.4'
+compile 'com.yarolegovich:discrete-scrollview:1.2.0'
 ```
+
 ## Sample
 <a href="https://play.google.com/store/apps/details?id=com.yarolegovich.discretescrollview.sample"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png" width="185" height="60"/></a><br>
 
@@ -83,10 +84,34 @@ cityPicker.setItemTransformer(new ScaleTransformer.Builder()
 ```
 You may see how it works on GIFs.
 
+#### Infinite scroll
+Infinite scroll is implemented on the adapter level:
+```java
+InfiniteScrollAdapter wrapper = InfiniteScrollAdapter.wrap(yourAdapter);
+scrollView.setAdapter(wrapper);
+```
+An instance of `InfiniteScrollAdapter` has the following useful methods:
+```java
+int getRealItemCount();
+
+int getRealCurrentPosition();
+
+int getRealPosition(int position);
+
+/*
+ * You will probably want this method in the following use case:
+ * int targetAdapterPosition = wrapper.getClosestPosition(targetPosition);
+ * scrollView.smoothScrollTo(targetAdapterPosition);
+ * To scroll the data set for the least required amount to reach targetPosition.
+ */
+int getClosestPosition(int position); 
+```
+Currently `InfiniteScrollAdapter` handles data set changes inefficiently, so your contributions are welcome. 
 #### Callbacks
 * Scroll state changes:
 ```java
-scrollView.setScrollStateChangeListener(listener);
+scrollView.addScrollStateChangeListener(listener);
+scrollView.removeScrollStateChangeListener(listener);
 
 public interface ScrollStateChangeListener<T extends ViewHolder> {
 
@@ -109,7 +134,8 @@ public interface ScrollStateChangeListener<T extends ViewHolder> {
 ```
 * Scroll:
 ```java
-scrollView.setScrollListener(listener);
+scrollView.addScrollListener(listener);
+scrollView.removeScrollListener(listener);
 
 public interface ScrollListener<T extends ViewHolder> {
   //The same as ScrollStateChangeListener, but for the cases when you are interested only in onScroll()
@@ -118,14 +144,16 @@ public interface ScrollListener<T extends ViewHolder> {
 ```
 * Current selection changes:
 ```java
-scrollView.setOnItemChangedListener(listener);
+scrollView.addOnItemChangedListener(listener);
+scrollView.removeOnItemChangedListener(listener);
 
 public interface OnItemChangedListener<T extends ViewHolder> {
   /**
    * Called when new item is selected. It is similar to the onScrollEnd of ScrollStateChangeListener, except that it is 
    * also called when currently selected item appears on the screen for the first time.
+   * viewHolder will be null, if data set becomes empty 
    */
-  void onCurrentItemChanged(@NonNull T viewHolder, int adapterPosition); 
+  void onCurrentItemChanged(@Nullable T viewHolder, int adapterPosition); 
 }
 ```
 
