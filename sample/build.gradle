@@ -7,7 +7,7 @@ android {
         applicationId "com.yarolegovich.discretescrollview.sample"
         minSdkVersion 19
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
+        versionCode 4
         versionName "1.0"
     }
 
