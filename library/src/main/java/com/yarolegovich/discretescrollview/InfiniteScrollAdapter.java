@@ -1,8 +1,7 @@
 package com.yarolegovich.discretescrollview;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.ViewGroup;
 
 /**
@@ -14,7 +13,8 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     private static final int NOT_INITIALIZED = -1;
     private static final int RESET_BOUND = 100;
 
-    public static <T extends RecyclerView.ViewHolder> InfiniteScrollAdapter<T> wrap(RecyclerView.Adapter<T> adapter) {
+    public static <T extends RecyclerView.ViewHolder> InfiniteScrollAdapter<T> wrap(
+            @NonNull RecyclerView.Adapter<T> adapter) {
         return new InfiniteScrollAdapter<>(adapter);
     }
 
@@ -23,7 +23,7 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
     private int currentRangeStart;
 
-    public InfiniteScrollAdapter(RecyclerView.Adapter<T> wrapped) {
+    public InfiniteScrollAdapter(@NonNull RecyclerView.Adapter<T> wrapped) {
         this.wrapped = wrapped;
         this.wrapped.registerAdapterDataObserver(new DataSetChangeDelegate());
     }
@@ -154,7 +154,5 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             onChanged();
         }
-
     }
-
 }

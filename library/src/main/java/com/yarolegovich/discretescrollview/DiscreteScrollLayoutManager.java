@@ -164,6 +164,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private void layoutViews(RecyclerView.Recycler recycler, Direction direction, int endBound) {
         final int positionStep = direction.applyTo(1);
 
+        //Predictive layout is required when we are doing smooth fast scroll towards pendingPosition
         boolean noPredictiveLayoutRequired = pendingPosition == NO_POSITION
                 || !direction.sameAs(pendingPosition - currentPosition);
 
