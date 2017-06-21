@@ -104,6 +104,14 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTimeForItemSettle(millis);
     }
 
+    public void setSlideOnFling(Boolean result){
+        layoutManager.setShouldSlideOnFling(result);
+    }
+
+    public void setSlideOnFlingThreshold(int threshold){
+        layoutManager.setSlideOnFlingThreshold(threshold);
+    }
+
     public void setOrientation(Orientation orientation) {
         layoutManager.setOrientation(orientation);
     }
