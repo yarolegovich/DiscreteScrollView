@@ -1,3 +1,15 @@
+I have forked this library to add a feature to allow sliding of multiples view on fling gesture. The original library only used to move view one-by-one. To use this feature set 
+
+    setSlideOnFling(true);
+    
+The default threshold is set to integer 2100. Lower the threshold, more fluid the animation. To change the threshold use
+
+    setSlideOnFlingThreshold(value);
+
+
+
+
+
 # DiscreteScrollView
 
 The library is a RecyclerView-based implementation of a scrollable list, where current item is centered and can be changed using swipes.
@@ -8,6 +20,8 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
+//Please remember this gradle will use the original library and not my version of it. 
+//If you want to use my version, import it as moudle and use it in your project
 compile 'com.yarolegovich:discrete-scrollview:1.2.0'
 ```
 
