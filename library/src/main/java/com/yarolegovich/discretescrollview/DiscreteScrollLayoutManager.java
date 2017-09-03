@@ -327,14 +327,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (currentPosition == position || pendingPosition != NO_POSITION) {
             return;
         }
-
-        pendingScroll = -scrolled;
-        Direction direction = Direction.fromDelta(position - currentPosition);
-        int distanceToScroll = Math.abs(position - currentPosition) * scrollToChangeCurrent;
-        pendingScroll += direction.applyTo(distanceToScroll);
-
-        pendingPosition = position;
-        startSmoothPendingScroll();
+        startSmoothPendingScroll(position);
     }
 
     @Override
@@ -424,13 +417,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         int newPosition = currentPosition + Direction.fromDelta(velocity).applyTo(throttleValue);
         newPosition = checkNewOnFlingPositionIsInBounds(newPosition);
         boolean isInScrollDirection = velocity * scrolled >= 0;
-        boolean canFling = isInScrollDirection && newPosition >= 0 && newPosition < getItemCount();
+        boolean canFling = isInScrollDirection && isInBounds(newPosition);
         if (canFling) {
-            pendingScroll = getHowMuchIsLeftToScroll(velocity);
-            if (pendingScroll != 0) {
-                pendingPosition = newPosition;
-                startSmoothPendingScroll(newPosition);
-            }
+            startSmoothPendingScroll(newPosition);
         } else {
             returnToCurrentPosition();
         }
