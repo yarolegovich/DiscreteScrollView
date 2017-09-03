@@ -156,9 +156,13 @@ public class DiscreteScrollView extends RecyclerView {
         }
     }
 
-    private void notifyScroll(float position, ViewHolder currentHolder, ViewHolder newHolder) {
+    private void notifyScroll(float position,
+                              int currentIndex, int newIndex,
+                              ViewHolder currentHolder, ViewHolder newHolder) {
         for (ScrollStateChangeListener listener : scrollStateChangeListeners) {
-            listener.onScroll(position, currentHolder, newHolder);
+            listener.onScroll(position, currentIndex, newIndex,
+                currentHolder,
+                newHolder);
         }
     }
 
@@ -214,15 +218,12 @@ public class DiscreteScrollView extends RecyclerView {
             if (scrollStateChangeListeners.isEmpty()) {
                 return;
             }
-            int current = getCurrentItem();
-            ViewHolder currentHolder = getViewHolder(getCurrentItem());
-
-            int newCurrent = current + (currentViewPosition < 0 ? 1 : -1);
-            ViewHolder newCurrentHolder = getViewHolder(newCurrent);
-
-            if (currentHolder != null && newCurrentHolder != null) {
-                notifyScroll(currentViewPosition, currentHolder, newCurrentHolder);
-            }
+            int currentIndex = getCurrentItem();
+            int newIndex = layoutManager.getNextPosition();
+            notifyScroll(currentViewPosition,
+                currentIndex, newIndex,
+                getViewHolder(currentIndex),
+                getViewHolder(newIndex));
         }
 
         @Override
@@ -247,12 +248,19 @@ public class DiscreteScrollView extends RecyclerView {
 
         void onScrollEnd(@NonNull T currentItemHolder, int adapterPosition);
 
-        void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrent);
+        void onScroll(float scrollPosition,
+                      int currentPosition,
+                      int newPosition,
+                      @Nullable T currentHolder,
+                      @Nullable T newCurrent);
     }
 
     public interface ScrollListener<T extends ViewHolder> {
 
-        void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrent);
+        void onScroll(float scrollPosition,
+                      int currentPosition, int newPosition,
+                      @Nullable T currentHolder,
+                      @Nullable T newCurrent);
     }
 
     public interface OnItemChangedListener<T extends ViewHolder> {

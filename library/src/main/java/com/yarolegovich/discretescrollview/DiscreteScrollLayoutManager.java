@@ -324,7 +324,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-        if (currentPosition == position) {
+        if (currentPosition == position || pendingPosition != NO_POSITION) {
             return;
         }
 
@@ -428,6 +428,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (canFling) {
             pendingScroll = getHowMuchIsLeftToScroll(velocity);
             if (pendingScroll != 0) {
+                pendingPosition = newPosition;
                 startSmoothPendingScroll(newPosition);
             }
         } else {
@@ -516,6 +517,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+    public int getNextPosition() {
+        if (scrolled == 0) {
+            return currentPosition;
+        } else if (pendingPosition != NO_POSITION) {
+            return pendingPosition;
+        } else {
+            return currentPosition + Direction.fromDelta(scrolled).applyTo(1);
+        }
+    }
+
     public void setItemTransformer(DiscreteScrollItemTransformer itemTransformer) {
         this.itemTransformer = itemTransformer;
     }
@@ -598,7 +609,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void notifyScroll() {
-        float position = -Math.min(Math.max(-1f, scrolled / (float) scrollToChangeCurrent), 1f);
+        float amountToScroll = pendingPosition != NO_POSITION ?
+            Math.abs(scrolled + pendingScroll) :
+            scrollToChangeCurrent;
+        float position = -Math.min(Math.max(-1f, scrolled / amountToScroll), 1f);
         scrollStateListener.onScroll(position);
     }
 

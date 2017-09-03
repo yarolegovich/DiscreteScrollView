@@ -59,11 +59,14 @@ public class GalleryActivity extends AppCompatActivity implements
     @Override
     public void onScroll(
             float currentPosition,
-            @NonNull GalleryAdapter.ViewHolder currentHolder,
-            @NonNull GalleryAdapter.ViewHolder newCurrent) {
-        float position = Math.abs(currentPosition);
-        currentHolder.setOverlayColor(interpolate(position, currentOverlayColor, overlayColor));
-        newCurrent.setOverlayColor(interpolate(position, overlayColor, currentOverlayColor));
+            int currentIndex, int newIndex,
+            @Nullable GalleryAdapter.ViewHolder currentHolder,
+            @Nullable GalleryAdapter.ViewHolder newCurrent) {
+        if (currentHolder != null && newCurrent != null) {
+            float position = Math.abs(currentPosition);
+            currentHolder.setOverlayColor(interpolate(position, currentOverlayColor, overlayColor));
+            newCurrent.setOverlayColor(interpolate(position, overlayColor, currentOverlayColor));
+        }
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.yarolegovich.discretescrollview.sample.weather;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity; 
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
@@ -36,6 +36,7 @@ public class WeatherActivity extends AppCompatActivity implements
 
         forecasts = WeatherStation.get().getForecasts();
         cityPicker = (DiscreteScrollView) findViewById(R.id.forecast_city_picker);
+        cityPicker.setSlideOnFling(true);
         cityPicker.setAdapter(new ForecastAdapter(forecasts));
         cityPicker.addOnItemChangedListener(this);
         cityPicker.addScrollStateChangeListener(this);
@@ -69,12 +70,12 @@ public class WeatherActivity extends AppCompatActivity implements
     @Override
     public void onScroll(
             float position,
-            @NonNull ForecastAdapter.ViewHolder currentHolder,
-            @NonNull ForecastAdapter.ViewHolder newHolder) {
-        Forecast current = forecasts.get(cityPicker.getCurrentItem());
-        int nextPosition = cityPicker.getCurrentItem() + (position > 0 ? -1 : 1);
-        if (nextPosition >= 0 && nextPosition < cityPicker.getAdapter().getItemCount()) {
-            Forecast next = forecasts.get(nextPosition);
+            int currentIndex, int newIndex,
+            @Nullable ForecastAdapter.ViewHolder currentHolder,
+            @Nullable ForecastAdapter.ViewHolder newHolder) {
+        Forecast current = forecasts.get(currentIndex);
+        if (newIndex >= 0 && newIndex < cityPicker.getAdapter().getItemCount()) {
+            Forecast next = forecasts.get(newIndex);
             forecastView.onScroll(1f - Math.abs(position), current, next);
         }
     }
