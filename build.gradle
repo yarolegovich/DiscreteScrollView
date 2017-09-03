@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.novoda:bintray-release:0.4.0'
     }
 }
@@ -11,6 +11,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://maven.google.com" }
     }
 }
 
@@ -26,9 +27,9 @@ ext {
     publishVersion = '1.2.0'
     licences = ['Apache-2.0']
 
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.2'
-    targetSdkVersion = compileSdkVersion
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.1'
+    targetSdkVersion = 25
 
-    supportLibVersion = '25.3.1'
+    supportLibVersion = '26.0.0'
 }
