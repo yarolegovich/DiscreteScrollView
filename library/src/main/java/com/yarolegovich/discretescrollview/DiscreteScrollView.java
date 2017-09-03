@@ -104,7 +104,7 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTimeForItemSettle(millis);
     }
 
-    public void setSlideOnFling(Boolean result){
+    public void setSlideOnFling(boolean result){
         layoutManager.setShouldSlideOnFling(result);
     }
 
