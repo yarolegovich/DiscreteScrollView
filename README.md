@@ -8,7 +8,7 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.2.0'
+compile 'com.yarolegovich:discrete-scrollview:1.3.0'
 ```
 
 ## Sample
@@ -84,6 +84,17 @@ cityPicker.setItemTransformer(new ScaleTransformer.Builder()
 ```
 You may see how it works on GIFs.
 
+#### Slide through multiple items
+
+To allow slide through multiple items call:
+```java
+scrollView.setSlideOnFling(true);
+```
+The default threshold is set to 2100. Lower the threshold, more fluid the animation. You can adjust the threshold by calling:
+```java
+scrollView.setSlideOnFlingThreshold(value);
+```
+
 #### Infinite scroll
 Infinite scroll is implemented on the adapter level:
 ```java
@@ -126,10 +137,12 @@ public interface ScrollStateChangeListener<T extends ViewHolder> {
    * -view1 is on position -1;
    * -currentlySelectedView is on position 0;
    * -view2 is on position 1.
+   * @param currentIndex - index of current view
+   * @param newIndex - index of a view which is becoming the new current
    * @param currentHolder - ViewHolder of a current view
-   * @param newCurrent - ViewHolder of a view that moved closer to the center
+   * @param newCurrent - ViewHolder of a view which is becoming the new current
    */
-  void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder); 
+  void onScroll(float scrollPosition, int currentIndex, int newIndex, @Nullable T currentHolder, @Nullable T newCurrentHolder); 
 }
 ```
 * Scroll:
@@ -139,7 +152,7 @@ scrollView.removeScrollListener(listener);
 
 public interface ScrollListener<T extends ViewHolder> {
   //The same as ScrollStateChangeListener, but for the cases when you are interested only in onScroll()
-  void onScroll(float scrollPosition, @NonNull T currentHolder, @NonNull T newCurrentHolder);
+  void onScroll(float scrollPosition, int currentIndex, int newIndex, @Nullable T currentHolder, @Nullable T newCurrentHolder);
 }
 ```
 * Current selection changes:
