@@ -72,7 +72,8 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_btn_rate:
-                Item current = data.get(itemPicker.getCurrentItem());
+                int realPosition = infiniteAdapter.getRealPosition(itemPicker.getCurrentItem());
+                Item current = data.get(realPosition);
                 shop.setRated(current.getId(), !shop.isRated(current.getId()));
                 changeRateButtonState(current);
                 break;
