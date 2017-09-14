@@ -5,10 +5,12 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 
 ![GifSampleShop](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_shop.gif)
 
+[ ![Download](https://api.bintray.com/packages/jjhesk/maven/discrete-scrollview/images/download.svg) ](https://bintray.com/jjhesk/maven/discrete-scrollview/_latestVersion)
+
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.3.0'
+compile 'com.hkm.ui:discrete-scrollview:1.3.1'
 ```
 
 ## Sample

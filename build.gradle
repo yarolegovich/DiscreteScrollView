@@ -3,8 +3,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.novoda:bintray-release:0.4.0'
+        classpath "com.android.tools.build:gradle:${GRADLE_ANDROID}"
+        classpath 'com.novoda:bintray-release:0.5.0'
     }
 }
 
@@ -15,21 +15,77 @@ allprojects {
     }
 }
 
+configure(allprojects) {
+    /* Android config and dependency versions */
+    ext {
+
+        libden = [
+
+                support_v4            : "com.android.support:support-v4:${SUPPORT_LIBRARY}",
+                percent               : "com.android.support:percent:${SUPPORT_LIBRARY}",
+                annotation            : "com.android.support:support-annotations:${SUPPORT_LIBRARY}",
+                support               : "com.android.support:support-v13:${SUPPORT_LIBRARY}",
+                appCompat             : "com.android.support:appcompat-v7:${SUPPORT_LIBRARY}",
+                recycler              : "com.android.support:recyclerview-v7:${SUPPORT_LIBRARY}",
+                design                : "com.android.support:design:${SUPPORT_LIBRARY}",
+                cardView              : "com.android.support:cardview-v7:${SUPPORT_LIBRARY}",
+                mediarouter           : "com.android.support:mediarouter-v7:${SUPPORT_LIBRARY}",
+                palette               : "com.android.support:palette-v7:${SUPPORT_LIBRARY}",
+
+
+                butterknife           : "com.jakewharton:butterknife:${BUTTERKNIFE}",
+                butterknifeapt        : "com.jakewharton:butterknife-compiler:${BUTTERKNIFE}",
+
+                retrofitAdapter       : "com.squareup.retrofit2:retrofit-adapters:${RETROFIT_LIBRARY}",
+                retrofitCore          : "com.squareup.retrofit2:retrofit:${RETROFIT_LIBRARY}",
+                retrofitRXJava        : "com.squareup.retrofit2:adapter-rxjava:${RETROFIT_LIBRARY}",
+                retrofitConverterGson : "com.squareup.retrofit2:converter-gson:${RETROFIT_LIBRARY}",
+                retrofitParent        : "com.squareup.retrofit2:parent:${RETROFIT_LIBRARY}",
+
+                okhttpLogger          : "com.squareup.okhttp3:logging-interceptor:${OKHTTP_LIBRARY}",
+                okhttpWebsocket       : "com.squareup.okhttp3:okhttp-ws:${OKHTTP_LIBRARY}",
+                okhttpCore            : "com.squareup.okhttp3:okhttp:${OKHTTP_LIBRARY}",
+
+                icepick               : "frankiesardo:icepick:${FRANKIES_ICEPICK}",
+                icepickProcessor      : "frankiesardo:icepick-processor:${FRANKIES_ICEPICK}",
+
+                smartTabLayoutUtilsV13: "com.ogaclejapan.smarttablayout:utils-v13:${SMARTTABLAYOUT}@aar",
+                smartTabLayoutUtilsV4 : "com.ogaclejapan.smarttablayout:utils-v4:${SMARTTABLAYOUT}@aar",
+                smartTabLayoutCore    : "com.ogaclejapan.smarttablayout:library:${SMARTTABLAYOUT}@aar",
+
+                leakcanary            : "com.squareup.leakcanary:leakcanary-android:${LEAKCANARY}",
+                leakcanarynoop        : "com.squareup.leakcanary:leakcanary-android-no-op:${LEAKCANARY}",
+
+                gms_anayltics         : "com.google.android.gms:play-services-analytics:${GOOGLE_PLAY_SERVICE}",
+
+                dagger                : "com.google.dagger:dagger:${DAGGER_2}",
+                daggerapt             : "com.google.dagger:dagger-compiler:${DAGGER_2}",
+
+
+                fishglassannotation   : "org.glassfish:javax.annotation:10.0-b28",
+                pretty_time           : "org.ocpsoft.prettytime:prettytime:4.0.1.Final",
+                gson                  : "com.google.code.gson:gson:2.6.2",
+                jsoup                 : "org.jsoup:jsoup:1.9.2",
+
+                firebasecore          : "com.google.firebase:firebase-core:${FIREBASE}",
+                database              : "com.google.firebase:firebase-database:${FIREBASE}",
+                storage               : "com.google.firebase:firebase-storage:${FIREBASE}",
+                crash                 : "com.google.firebase:firebase-crash:${FIREBASE}",
+                auth                  : "com.google.firebase:firebase-auth:${FIREBASE}",
+                messaging             : "com.google.firebase:firebase-messaging:${FIREBASE}",
+                config                : "com.google.firebase:firebase-config:${FIREBASE}",
+                invites               : "com.google.firebase:firebase-invites:${FIREBASE}",
+                ads                   : "com.google.firebase:firebase-ads:${FIREBASE}",
+                appindexing           : "com.google.firebase:firebase-appindexing:${FIREBASE}",
+                perf                  : "com.google.firebase:firebase-perf:${FIREBASE}"
+
+
+        ]
+    }
+
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-ext {
-    userOrg = 'yarolegovich'
-    groupId = 'com.yarolegovich'
-    uploadName = 'DiscreteScrollView'
-    description = 'Scrollable list of items, where current item is centered and can be changed using swipes.'
-    publishVersion = '1.3.0'
-    licences = ['Apache-2.0']
-
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.1'
-    targetSdkVersion = 25
-
-    supportLibVersion = '26.0.0'
-}
