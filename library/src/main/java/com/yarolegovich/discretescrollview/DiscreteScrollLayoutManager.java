@@ -11,7 +11,6 @@ import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     static final int NO_POSITION = -1;
 
     private static final String EXTRA_POSITION = "extra_position";
-    private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 150;
+    private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 300;
+    private static final int DEFAULT_FLING_THRESHOLD = 2100; //Decrease to increase sensitivity.
 
     //This field will take value of all visible view's center points during the fill phase
     private Point viewCenterIterator;
@@ -57,6 +57,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private boolean dataSetChangeShiftedPosition;
     private boolean isFirstOrEmptyLayout;
 
+    private int flingThreshold;
+    private boolean shouldSlideOnFling;
+
     @NonNull
     private final ScrollStateListener scrollStateListener;
     private DiscreteScrollItemTransformer itemTransformer;
@@ -69,6 +72,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         this.timeForItemSettle = DEFAULT_TIME_FOR_ITEM_SETTLE;
         this.pendingPosition = NO_POSITION;
         this.currentPosition = NO_POSITION;
+        this.flingThreshold = DEFAULT_FLING_THRESHOLD;
+        this.shouldSlideOnFling = false;
         this.recyclerCenter = new Point();
         this.currentViewCenter = new Point();
         this.viewCenterIterator = new Point();
@@ -183,6 +188,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void layoutView(RecyclerView.Recycler recycler, int position, Point viewCenter) {
+        if (position < 0) return;
         View v = detachedCache.get(position);
         if (v == null) {
             v = recycler.getViewForPosition(position);
@@ -318,17 +324,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-        if (currentPosition == position) {
+        if (currentPosition == position || pendingPosition != NO_POSITION) {
             return;
         }
-
-        pendingScroll = -scrolled;
-        Direction direction = Direction.fromDelta(position - currentPosition);
-        int distanceToScroll = Math.abs(position - currentPosition) * scrollToChangeCurrent;
-        pendingScroll += direction.applyTo(distanceToScroll);
-
-        pendingPosition = position;
-        startSmoothPendingScroll();
+        startSmoothPendingScroll(position);
     }
 
     @Override
@@ -414,14 +413,13 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     public void onFling(int velocityX, int velocityY) {
         int velocity = orientationHelper.getFlingVelocity(velocityX, velocityY);
-        int newPosition = currentPosition + Direction.fromDelta(velocity).applyTo(1);
+        int throttleValue = shouldSlideOnFling ? Math.abs(velocityX / flingThreshold) : 1;
+        int newPosition = currentPosition + Direction.fromDelta(velocity).applyTo(throttleValue);
+        newPosition = checkNewOnFlingPositionIsInBounds(newPosition);
         boolean isInScrollDirection = velocity * scrolled >= 0;
-        boolean canFling = isInScrollDirection && newPosition >= 0 && newPosition < getItemCount();
+        boolean canFling = isInScrollDirection && isInBounds(newPosition);
         if (canFling) {
-            pendingScroll = getHowMuchIsLeftToScroll(velocity);
-            if (pendingScroll != 0) {
-                startSmoothPendingScroll();
-            }
+            startSmoothPendingScroll(newPosition);
         } else {
             returnToCurrentPosition();
         }
@@ -465,6 +463,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         startSmoothScroll(scroller);
     }
 
+    private void startSmoothPendingScroll(int position){
+        if (currentPosition == position) return;
+        pendingScroll = -scrolled;
+        Direction direction = Direction.fromDelta(position - currentPosition);
+        int distanceToScroll = Math.abs(position - currentPosition) * scrollToChangeCurrent;
+        pendingScroll += direction.applyTo(distanceToScroll);
+        pendingPosition = position;
+        startSmoothPendingScroll();
+    }
+
     @Override
     public void onAdapterChanged(RecyclerView.Adapter oldAdapter, RecyclerView.Adapter newAdapter) {
         if (newAdapter.getItemCount() > 0) {
@@ -498,6 +506,16 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+    public int getNextPosition() {
+        if (scrolled == 0) {
+            return currentPosition;
+        } else if (pendingPosition != NO_POSITION) {
+            return pendingPosition;
+        } else {
+            return currentPosition + Direction.fromDelta(scrolled).applyTo(1);
+        }
+    }
+
     public void setItemTransformer(DiscreteScrollItemTransformer itemTransformer) {
         this.itemTransformer = itemTransformer;
     }
@@ -516,6 +534,14 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         orientationHelper = orientation.createHelper();
         removeAllViews();
         requestLayout();
+    }
+
+    public void setShouldSlideOnFling(boolean result){
+        shouldSlideOnFling = result;
+    }
+
+    public void setSlideOnFlingThreshold(int threshold){
+        flingThreshold = threshold;
     }
 
     public int getCurrentPosition() {
@@ -539,6 +565,18 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return Math.min(Math.max(-1f, distanceFromCenter / scrollToChangeCurrent), 1f);
     }
 
+    private int checkNewOnFlingPositionIsInBounds(int position) {
+        //The check is required in case slide through multiple items is turned on
+        if (currentPosition != 0 && position < 0) {
+            //If currentPosition == 0 && position < 0 we forbid scroll to the left,
+            //but if currentPosition != 0 we can slide to the first item
+            return 0;
+        } else if (currentPosition != getItemCount() - 1 && position >= getItemCount()) {
+            return getItemCount() - 1;
+        }
+        return position;
+    }
+
     private int getHowMuchIsLeftToScroll(int dx) {
         return Direction.fromDelta(dx).applyTo(scrollToChangeCurrent - Math.abs(scrolled));
     }
@@ -560,7 +598,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private void notifyScroll() {
-        float position = -Math.min(Math.max(-1f, scrolled / (float) scrollToChangeCurrent), 1f);
+        float amountToScroll = pendingPosition != NO_POSITION ?
+            Math.abs(scrolled + pendingScroll) :
+            scrollToChangeCurrent;
+        float position = -Math.min(Math.max(-1f, scrolled / amountToScroll), 1f);
         scrollStateListener.onScroll(position);
     }
 
