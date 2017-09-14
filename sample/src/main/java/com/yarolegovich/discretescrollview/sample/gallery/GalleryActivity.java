@@ -2,6 +2,7 @@ package com.yarolegovich.discretescrollview.sample.gallery;
 
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -34,7 +35,7 @@ public class GalleryActivity extends AppCompatActivity implements
 
         Gallery gallery = Gallery.get();
         List<Image> data = gallery.getData();
-        DiscreteScrollView itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
+        final DiscreteScrollView itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
         itemPicker.setAdapter(new GalleryAdapter(data));
         itemPicker.addScrollListener(this);
         itemPicker.addOnItemChangedListener(this);
@@ -42,7 +43,16 @@ public class GalleryActivity extends AppCompatActivity implements
 
         findViewById(R.id.home).setOnClickListener(this);
         findViewById(R.id.fab_share).setOnClickListener(this);
+
+        ehandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                itemPicker.setCurrentPosition(3);
+            }
+        }, 1000);
     }
+
+    Handler ehandler = new Handler();
 
     @Override
     public void onClick(View v) {
