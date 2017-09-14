@@ -57,7 +57,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private boolean dataSetChangeShiftedPosition;
     private boolean isFirstOrEmptyLayout;
 
-    private int flingThreshold;
+    private int flingThreshold = 2100; //Decrease to increase sensitivity.
     private boolean shouldSlideOnFling;
 
     @NonNull
@@ -463,7 +463,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         startSmoothScroll(scroller);
     }
 
-    private void startSmoothPendingScroll(int position){
+    private void startSmoothPendingScroll(int position) {
         if (currentPosition == position) return;
         pendingScroll = -scrolled;
         Direction direction = Direction.fromDelta(position - currentPosition);
@@ -536,11 +536,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         requestLayout();
     }
 
-    public void setShouldSlideOnFling(boolean result){
+    public void setShouldSlideOnFling(boolean result) {
         shouldSlideOnFling = result;
     }
 
-    public void setSlideOnFlingThreshold(int threshold){
+    public void setSlideOnFlingThreshold(int threshold) {
         flingThreshold = threshold;
     }
 
@@ -599,8 +599,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private void notifyScroll() {
         float amountToScroll = pendingPosition != NO_POSITION ?
-            Math.abs(scrolled + pendingScroll) :
-            scrollToChangeCurrent;
+                Math.abs(scrolled + pendingScroll) :
+                scrollToChangeCurrent;
         float position = -Math.min(Math.max(-1f, scrolled / amountToScroll), 1f);
         scrollStateListener.onScroll(position);
     }

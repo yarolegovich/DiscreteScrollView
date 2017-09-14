@@ -71,6 +71,11 @@ public class DiscreteScrollView extends RecyclerView {
         }
     }
 
+    public final void setCurrentPosition(int position) {
+        if (getAdapter().getItemCount() > position) {
+            scrollToPosition(position);
+        }
+    }
 
     @Override
     public boolean fling(int velocityX, int velocityY) {
@@ -104,11 +109,11 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTimeForItemSettle(millis);
     }
 
-    public void setSlideOnFling(boolean result){
+    public void setSlideOnFling(boolean result) {
         layoutManager.setShouldSlideOnFling(result);
     }
 
-    public void setSlideOnFlingThreshold(int threshold){
+    public void setSlideOnFlingThreshold(int threshold) {
         layoutManager.setSlideOnFlingThreshold(threshold);
     }
 
@@ -161,8 +166,8 @@ public class DiscreteScrollView extends RecyclerView {
                               ViewHolder currentHolder, ViewHolder newHolder) {
         for (ScrollStateChangeListener listener : scrollStateChangeListeners) {
             listener.onScroll(position, currentIndex, newIndex,
-                currentHolder,
-                newHolder);
+                    currentHolder,
+                    newHolder);
         }
     }
 
@@ -221,9 +226,9 @@ public class DiscreteScrollView extends RecyclerView {
             int currentIndex = getCurrentItem();
             int newIndex = layoutManager.getNextPosition();
             notifyScroll(currentViewPosition,
-                currentIndex, newIndex,
-                getViewHolder(currentIndex),
-                getViewHolder(newIndex));
+                    currentIndex, newIndex,
+                    getViewHolder(currentIndex),
+                    getViewHolder(newIndex));
         }
 
         @Override

@@ -1,6 +1,7 @@
 package com.yarolegovich.discretescrollview.sample.shop;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -36,6 +37,8 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     private DiscreteScrollView itemPicker;
     private InfiniteScrollAdapter infiniteAdapter;
 
+    Handler ehandler = new Handler();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +53,9 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
         itemPicker.setOrientation(Orientation.HORIZONTAL);
         itemPicker.addOnItemChangedListener(this);
-        infiniteAdapter = InfiniteScrollAdapter.wrap(new ShopAdapter(data));
-        itemPicker.setAdapter(infiniteAdapter);
+        ShopAdapter shopAdapter = new ShopAdapter(data);
+        infiniteAdapter = InfiniteScrollAdapter.wrap(shopAdapter);
+        itemPicker.setAdapter(shopAdapter);
         itemPicker.setItemTransitionTimeMillis(DiscreteScrollViewOptions.getTransitionTime());
         itemPicker.setItemTransformer(new ScaleTransformer.Builder()
                 .setMinScale(0.8f)
@@ -66,6 +70,14 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         findViewById(R.id.home).setOnClickListener(this);
         findViewById(R.id.btn_smooth_scroll).setOnClickListener(this);
         findViewById(R.id.btn_transition_time).setOnClickListener(this);
+
+        ehandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                itemPicker.setCurrentPosition(3);
+            }
+        }, 1000);
+
     }
 
     @Override

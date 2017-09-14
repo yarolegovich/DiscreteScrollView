@@ -2,21 +2,23 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion project.ANDROID_BUILD_SDK_VERSION as int
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion project.ANDROID_BUILD_MIN_SDK_VERSION
+        targetSdkVersion project.ANDROID_BUILD_TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
     }
 }
 
 dependencies {
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
+    compile libden.appCompat
+    compile libden.recycler
 }
+
+/*
 
 publish {
     artifactId = 'discrete-scrollview'
@@ -26,4 +28,6 @@ publish {
     publishVersion = rootProject.publishVersion
     description = rootProject.description
     licences = rootProject.licences
-}
+}*/
+
+apply from: 'bintrayrelease.gradle'
