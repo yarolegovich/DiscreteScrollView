@@ -475,7 +475,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onAdapterChanged(RecyclerView.Adapter oldAdapter, RecyclerView.Adapter newAdapter) {
-        if (newAdapter.getItemCount() > 0) {
+        if ((newAdapter != null) && (newAdapter.getItemCount() > 0)) {
             pendingPosition = NO_POSITION;
             scrolled = pendingScroll = 0;
             currentPosition = 0;
