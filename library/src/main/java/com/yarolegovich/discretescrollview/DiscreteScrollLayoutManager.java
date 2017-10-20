@@ -374,7 +374,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         Direction scrollDirection = Direction.fromDelta(scrolled);
         if (Math.abs(scrolled) == scrollToChangeCurrent) {
-            currentPosition += scrollDirection.applyTo(1);
+            if (currentPosition != NO_POSITION) {
+                currentPosition += scrollDirection.applyTo(1);
+            }
             scrolled = 0;
         }
 
