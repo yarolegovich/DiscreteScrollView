@@ -413,7 +413,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     public void onFling(int velocityX, int velocityY) {
         int velocity = orientationHelper.getFlingVelocity(velocityX, velocityY);
-        int throttleValue = shouldSlideOnFling ? Math.abs(velocityX / flingThreshold) : 1;
+        int throttleValue = shouldSlideOnFling ? Math.abs(velocity / flingThreshold) : 1;
         int newPosition = currentPosition + Direction.fromDelta(velocity).applyTo(throttleValue);
         newPosition = checkNewOnFlingPositionIsInBounds(newPosition);
         boolean isInScrollDirection = velocity * scrolled >= 0;
