@@ -1,7 +1,6 @@
 package com.yarolegovich.discretescrollview;
 
 import android.graphics.Point;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 /**
@@ -41,7 +40,7 @@ public enum Orientation {
 
         int getPendingDy(int pendingScroll);
 
-        void offsetChildren(int amount, RecyclerView.LayoutManager lm);
+        void offsetChildren(int amount, RecyclerViewProxy lm);
 
         float getDistanceFromCenter(Point center, int viewCenterX, int viewCenterY);
 
@@ -100,8 +99,8 @@ public enum Orientation {
         }
 
         @Override
-        public void offsetChildren(int amount, RecyclerView.LayoutManager lm) {
-            lm.offsetChildrenHorizontal(amount);
+        public void offsetChildren(int amount, RecyclerViewProxy helper) {
+            helper.offsetChildrenHorizontal(amount);
         }
 
         @Override
@@ -161,8 +160,8 @@ public enum Orientation {
         }
 
         @Override
-        public void offsetChildren(int amount, RecyclerView.LayoutManager lm) {
-            lm.offsetChildrenVertical(amount);
+        public void offsetChildren(int amount, RecyclerViewProxy helper) {
+            helper.offsetChildrenVertical(amount);
         }
 
         @Override
@@ -217,5 +216,4 @@ public enum Orientation {
         }
     }
 
-    ;
 }
