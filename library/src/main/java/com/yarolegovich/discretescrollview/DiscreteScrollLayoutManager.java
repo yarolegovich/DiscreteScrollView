@@ -92,6 +92,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
 
+        if (currentPosition == NO_POSITION) {
+            currentPosition = 0;
+        }
+
         //onLayoutChildren may be called multiple times and this check is required so that the flag
         //won't be cleared until onLayoutCompleted
         if (!isFirstOrEmptyLayout) {
