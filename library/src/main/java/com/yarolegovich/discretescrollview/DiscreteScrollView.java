@@ -220,10 +220,12 @@ public class DiscreteScrollView extends RecyclerView {
             }
             int currentIndex = getCurrentItem();
             int newIndex = layoutManager.getNextPosition();
-            notifyScroll(currentViewPosition,
-                currentIndex, newIndex,
-                getViewHolder(currentIndex),
-                getViewHolder(newIndex));
+            if (currentIndex != newIndex) {
+                notifyScroll(currentViewPosition,
+                    currentIndex, newIndex,
+                    getViewHolder(currentIndex),
+                    getViewHolder(newIndex));
+            }
         }
 
         @Override
