@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.yarolegovich.discretescrollview.sample.R;
 
 import java.util.List;
@@ -47,9 +45,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         int iconTint = ContextCompat.getColor(holder.itemView.getContext(), R.color.grayIconTint);
         Forecast forecast = data.get(position);
-        Glide.with(holder.itemView.getContext())
+      /*  Glide.with(holder.itemView.getContext())
                 .load(forecast.getCityIcon())
                 .listener(new TintOnLoad(holder.imageView, iconTint))
+                .into(holder.imageView);*/
+
+        Glide.with(holder.itemView.getContext())
+                .load(holder.imageView)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(holder.imageView);
         holder.textView.setText(forecast.getCityName());
     }
@@ -103,7 +106,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
         }
     }
 
-    private static class TintOnLoad implements RequestListener<Integer, GlideDrawable> {
+   /* private static class TintOnLoad implements RequestListener<Integer, GlideDrawable> {
 
         private ImageView imageView;
         private int tintColor;
@@ -123,5 +126,5 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
             imageView.setColorFilter(tintColor);
             return false;
         }
-    }
+    }*/
 }

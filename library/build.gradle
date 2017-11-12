@@ -14,8 +14,8 @@ android {
 }
 
 dependencies {
-    compile libden.appCompat
-    compile libden.recycler
+    implementation libden.appCompat
+    implementation libden.recycler
 }
 
 /*

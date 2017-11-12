@@ -10,7 +10,7 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.hkm.ui:discrete-scrollview:1.3.1'
+compile 'com.hkm.ui:discrete-scrollview:1.5.0'
 ```
 
 ## Sample
