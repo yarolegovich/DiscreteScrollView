@@ -175,6 +175,9 @@ public interface OnItemChangedListener<T extends ViewHolder> {
 ## Special thanks
 Thanks to [Tayisiya Yurkiv](https://www.behance.net/yurkivt) for sample app design and beautiful GIFs.
 
+### Thank you for your support and we will bring more amazing libraries to your productive works. We are accepting bitcoin by the address as below. Please scan the QR code to start
+![wallet](http://s32.postimg.org/sdd1oio1t/qrwallet.jpg)
+
 ## License
 ```
 Copyright 2017 Yaroslav Shevchuk
