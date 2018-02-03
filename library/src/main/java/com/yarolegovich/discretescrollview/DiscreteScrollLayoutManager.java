@@ -40,7 +40,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private int scrollToChangeCurrent;
     private int currentScrollState;
 
-    private Orientation.Helper orientationHelper;
+    private DSVOrientation.Helper orientationHelper;
 
     private int scrolled;
     private int pendingScroll;
@@ -67,7 +67,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     public DiscreteScrollLayoutManager(
             @NonNull Context c,
             @NonNull ScrollStateListener scrollStateListener,
-            @NonNull Orientation orientation) {
+            @NonNull DSVOrientation orientation) {
         this.context = c;
         this.timeForItemSettle = DEFAULT_TIME_FOR_ITEM_SETTLE;
         this.pendingPosition = NO_POSITION;
@@ -533,7 +533,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         requestLayout();
     }
 
-    public void setOrientation(Orientation orientation) {
+    public void setOrientation(DSVOrientation orientation) {
         orientationHelper = orientation.createHelper();
         removeAllViews();
         requestLayout();
