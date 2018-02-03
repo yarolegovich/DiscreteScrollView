@@ -478,6 +478,58 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
+    public int computeVerticalScrollRange(RecyclerView.State state) {
+        return computeScrollRange(state);
+    }
+
+    @Override
+    public int computeVerticalScrollOffset(RecyclerView.State state) {
+        return computeScrollOffset(state);
+    }
+
+    @Override
+    public int computeVerticalScrollExtent(RecyclerView.State state) {
+        return computeScrollExtent(state);
+    }
+
+    @Override
+    public int computeHorizontalScrollRange(RecyclerView.State state) {
+        return computeScrollRange(state);
+    }
+
+    @Override
+    public int computeHorizontalScrollOffset(RecyclerView.State state) {
+        return computeScrollOffset(state);
+    }
+
+    @Override
+    public int computeHorizontalScrollExtent(RecyclerView.State state) {
+        return computeScrollExtent(state);
+    }
+
+    private int computeScrollOffset(RecyclerView.State state) {
+        int scrollbarSize = computeScrollExtent(state);
+        int offset = (int) ((scrolled / (float) scrollToChangeCurrent) * scrollbarSize);
+        return (currentPosition * scrollbarSize) + offset;
+    }
+
+    private int computeScrollExtent(RecyclerView.State state) {
+        if (getItemCount() == 0) {
+            return 0;
+        } else {
+            return (int) (computeScrollRange(state) / (float) getItemCount());
+        }
+    }
+
+    private int computeScrollRange(RecyclerView.State state) {
+        if (getItemCount() == 0) {
+            return 0;
+        } else {
+            return scrollToChangeCurrent * (getItemCount() - 1);
+        }
+    }
+
+    @Override
     public void onAdapterChanged(RecyclerView.Adapter oldAdapter, RecyclerView.Adapter newAdapter) {
         pendingPosition = NO_POSITION;
         scrolled = pendingScroll = 0;
