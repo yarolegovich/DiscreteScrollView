@@ -8,7 +8,7 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.3.2'
+compile 'com.yarolegovich:discrete-scrollview:1.4.0'
 ```
 
 ## Sample
@@ -45,7 +45,7 @@ scrollView.setAdapter(new YourAdapterImplementation());
 ### API
 #### Layout
 ```java
-scrollView.setOrientation(Orientation o); //Sets an orientation of the view
+scrollView.setOrientation(DSVOrientation o); //Sets an orientation of the view
 scrollView.setOffscreenItems(count); //Reserve extra space equal to (childSize * count) on each side of the view
 ```
 #### Related to the current item:

@@ -6,7 +6,7 @@ import android.view.View;
 /**
  * Created by yarolegovich on 16.03.2017.
  */
-public enum Orientation {
+public enum DSVOrientation {
 
     HORIZONTAL {
         @Override
