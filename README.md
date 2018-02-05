@@ -73,6 +73,10 @@ public interface DiscreteScrollItemTransformer {
     void transformItem(View item, float position); 
 }
 ```
+In the above example `view1Position == (currentlySelectedViewPosition - n)` and `view2Position == (currentlySelectedViewPosition + n)`, where `n` defaults to 1 and can be changed using the following API:
+```java
+scrollView.setClampTransformProgressAfter(n);
+```
 Because scale transformation is the most common, I included a helper class - ScaleTransformer, here is how to use it:
 ```java
 cityPicker.setItemTransformer(new ScaleTransformer.Builder()

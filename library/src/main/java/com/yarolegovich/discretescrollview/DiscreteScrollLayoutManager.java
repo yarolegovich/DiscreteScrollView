@@ -28,6 +28,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_TIME_FOR_ITEM_SETTLE = 300;
     private static final int DEFAULT_FLING_THRESHOLD = 2100; //Decrease to increase sensitivity.
+    private static final int DEFAULT_TRANSFORM_CLAMP_ITEM_COUNT = 1;
 
     protected static final float SCROLL_TO_SNAP_TO_ANOTHER_ITEM = 0.6f;
 
@@ -57,6 +58,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     private int timeForItemSettle;
     private int offscreenItems;
+    private int transformClampItemCount;
 
     private boolean dataSetChangeShiftedPosition;
 
@@ -86,6 +88,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         this.scrollStateListener = scrollStateListener;
         this.orientationHelper = orientation.createHelper();
         this.recyclerViewProxy = new RecyclerViewProxy(this);
+        this.transformClampItemCount = DEFAULT_TRANSFORM_CLAMP_ITEM_COUNT;
         setAutoMeasureEnabled(true);
     }
 
@@ -315,9 +318,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     protected void applyItemTransformToChildren() {
         if (itemTransformer != null) {
+            int clampAfterDistance = scrollToChangeCurrent * transformClampItemCount;
             for (int i = 0; i < recyclerViewProxy.getChildCount(); i++) {
                 View child = recyclerViewProxy.getChildAt(i);
-                itemTransformer.transformItem(child, getCenterRelativePositionOf(child));
+                float position = getCenterRelativePositionOf(child, clampAfterDistance);
+                itemTransformer.transformItem(child, position);
             }
         }
     }
@@ -590,6 +595,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         recyclerViewProxy.requestLayout();
     }
 
+    public void setTransformClampItemCount(int transformClampItemCount) {
+        this.transformClampItemCount = transformClampItemCount;
+        applyItemTransformToChildren();
+    }
+
     public void setOrientation(DSVOrientation orientation) {
         orientationHelper = orientation.createHelper();
         recyclerViewProxy.removeAllViews();
@@ -618,11 +628,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
-    private float getCenterRelativePositionOf(View v) {
+    private float getCenterRelativePositionOf(View v, int maxDistance) {
         float distanceFromCenter = orientationHelper.getDistanceFromCenter(recyclerCenter,
                 getDecoratedLeft(v) + childHalfWidth,
                 getDecoratedTop(v) + childHalfHeight);
-        return Math.min(Math.max(-1f, distanceFromCenter / scrollToChangeCurrent), 1f);
+        return Math.min(Math.max(-1f, distanceFromCenter / maxDistance), 1f);
     }
 
     private int checkNewOnFlingPositionIsInBounds(int position) {

@@ -120,6 +120,13 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setOffscreenItems(items);
     }
 
+    public void setClampTransformProgressAfter(@IntRange(from = 1) int itemCount) {
+        if (itemCount <= 1) {
+            throw new IllegalArgumentException("must be >= 1");
+        }
+        layoutManager.setTransformClampItemCount(itemCount);
+    }
+
     public void addScrollStateChangeListener(@NonNull ScrollStateChangeListener<?> scrollStateChangeListener) {
         scrollStateChangeListeners.add(scrollStateChangeListener);
     }
