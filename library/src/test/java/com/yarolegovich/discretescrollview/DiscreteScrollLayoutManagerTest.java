@@ -14,11 +14,20 @@ import java.util.List;
 
 import static com.yarolegovich.discretescrollview.DiscreteScrollLayoutManager.NO_POSITION;
 import static com.yarolegovich.discretescrollview.DiscreteScrollLayoutManager.SCROLL_TO_SNAP_TO_ANOTHER_ITEM;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Matchers.any;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.hamcrest.MockitoHamcrest.argThat;
 
 /**
  * Created by yarolegovich on 10/25/17.
@@ -34,7 +43,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
     private DiscreteScrollLayoutManager layoutManager;
     private DiscreteScrollLayoutManager.ScrollStateListener mockScrollStateListener;
     private StubRecyclerViewProxy stubRecyclerViewProxy;
-    private Orientation.Helper stubOrientationHelper;
+    private DSVOrientation.Helper stubOrientationHelper;
     private RecyclerView.State stubState;
 
     @Before
@@ -58,7 +67,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
         layoutManager.setOrientationHelper(stubOrientationHelper);
     }
 
-    protected abstract Orientation getOrientationToTest();
+    protected abstract DSVOrientation getOrientationToTest();
 
     @Test
     public void onLayoutChildren_noItems_removesViewsAndResetsState() {
@@ -70,7 +79,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
 
         layoutManager.onLayoutChildren(null, stubState);
 
-        verify(stubRecyclerViewProxy).removeAndRecycleAllViews(any(RecyclerView.Recycler.class));
+        verify(stubRecyclerViewProxy).removeAndRecycleAllViews(nullable(RecyclerView.Recycler.class));
         assertThat(layoutManager.pendingScroll, is(0));
         assertThat(layoutManager.scrolled, is(0));
         assertThat(layoutManager.pendingPosition, is(NO_POSITION));
@@ -192,7 +201,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
 
         assertThat(layoutManager.detachedCache.size(), is(0));
         verify(stubRecyclerViewProxy, times(views.size()))
-                .recycleView(argThat(isIn(views)), any(RecyclerView.Recycler.class));
+                .recycleView(argThat(isIn(views)), nullable(RecyclerView.Recycler.class));
     }
 
     @Test
@@ -309,7 +318,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
 
         layoutManager.scrollBy(200, null);
 
-        verify(layoutManager).fill(any(RecyclerView.Recycler.class));
+        verify(layoutManager).fill(nullable(RecyclerView.Recycler.class));
     }
 
     @Test

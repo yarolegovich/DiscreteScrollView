@@ -12,8 +12,8 @@ import org.robolectric.annotation.Config;
 public class HorizontalDiscreteScrollLayoutManagerTest extends DiscreteScrollLayoutManagerTest {
 
     @Override
-    protected Orientation getOrientationToTest() {
-        return Orientation.HORIZONTAL;
+    protected DSVOrientation getOrientationToTest() {
+        return DSVOrientation.HORIZONTAL;
     }
 
 }
