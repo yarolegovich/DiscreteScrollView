@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.Locale;
+
 /**
  * Created by yarolegovich on 28-Apr-17.
  */
@@ -66,7 +68,7 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
     @Override
     public int getItemCount() {
-        return wrapped.getItemCount() == 0 ? 0 : Integer.MAX_VALUE;
+        return wrapped.getItemCount() <= 1 ? wrapped.getItemCount() : Integer.MAX_VALUE;
     }
 
     public int getRealItemCount() {
@@ -82,6 +84,11 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     }
 
     public int getClosestPosition(int position) {
+        if (position >= wrapped.getItemCount()) {
+            throw new IndexOutOfBoundsException(String.format(Locale.US,
+                    "requested position is outside adapter's bounds: position=%d, size=%d",
+                    position, wrapped.getItemCount()));
+        }
         int adapterTarget = currentRangeStart + position;
         int adapterCurrent = layoutManager.getCurrentPosition();
         if (adapterTarget == adapterCurrent) {
@@ -117,8 +124,13 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     }
 
     private void resetRange(int newPosition) {
-        currentRangeStart = Integer.MAX_VALUE / 2;
-        layoutManager.scrollToPosition(currentRangeStart + newPosition);
+        if (getItemCount() == 1) {
+            currentRangeStart = 0;
+            layoutManager.scrollToPosition(0);
+        } else {
+            currentRangeStart = Integer.MAX_VALUE / 2;
+            layoutManager.scrollToPosition(currentRangeStart + newPosition);
+        }
     }
 
     //TODO: handle proper data set change notifications
