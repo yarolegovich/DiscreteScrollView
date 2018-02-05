@@ -30,6 +30,8 @@ public class DiscreteScrollView extends RecyclerView {
     private List<ScrollStateChangeListener> scrollStateChangeListeners;
     private List<OnItemChangedListener> onItemChangedListeners;
 
+    private boolean isOverScrollEnabled;
+
     public DiscreteScrollView(Context context) {
         super(context);
         init(null);
@@ -55,6 +57,8 @@ public class DiscreteScrollView extends RecyclerView {
             orientation = ta.getInt(R.styleable.DiscreteScrollView_dsv_orientation, DEFAULT_ORIENTATION);
             ta.recycle();
         }
+
+        isOverScrollEnabled = getOverScrollMode() != OVER_SCROLL_NEVER;
 
         layoutManager = new DiscreteScrollLayoutManager(
                 getContext(), new ScrollStateListener(),
@@ -127,6 +131,11 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTransformClampItemCount(itemCount);
     }
 
+    public void setOverScrollEnabled(boolean overScrollEnabled) {
+        isOverScrollEnabled = overScrollEnabled;
+        setOverScrollMode(OVER_SCROLL_NEVER);
+    }
+
     public void addScrollStateChangeListener(@NonNull ScrollStateChangeListener<?> scrollStateChangeListener) {
         scrollStateChangeListeners.add(scrollStateChangeListener);
     }
@@ -192,7 +201,9 @@ public class DiscreteScrollView extends RecyclerView {
 
         @Override
         public void onIsBoundReachedFlagChange(boolean isBoundReached) {
-            setOverScrollMode(isBoundReached ? OVER_SCROLL_ALWAYS : OVER_SCROLL_NEVER);
+            if (isOverScrollEnabled) {
+                setOverScrollMode(isBoundReached ? OVER_SCROLL_ALWAYS : OVER_SCROLL_NEVER);
+            }
         }
 
         @Override
