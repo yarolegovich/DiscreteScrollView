@@ -137,8 +137,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     protected void initChildDimensions(RecyclerView.Recycler recycler) {
         View viewToMeasure = recyclerViewProxy.getMeasuredChildForAdapterPosition(0, recycler);
 
-        int childViewWidth = recyclerViewProxy.getMeasuredWidth(viewToMeasure);
-        int childViewHeight = recyclerViewProxy.getMeasuredHeight(viewToMeasure);
+        int childViewWidth = recyclerViewProxy.getMeasuredWidthWithMargin(viewToMeasure);
+        int childViewHeight = recyclerViewProxy.getMeasuredHeightWithMargin(viewToMeasure);
 
         childHalfWidth = childViewWidth / 2;
         childHalfHeight = childViewHeight / 2;

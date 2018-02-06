@@ -67,12 +67,12 @@ public class StubRecyclerViewProxy extends RecyclerViewProxy {
     }
 
     @Override
-    public int getMeasuredWidth(View child) {
+    public int getMeasuredWidthWithMargin(View child) {
         return childWidth;
     }
 
     @Override
-    public int getMeasuredHeight(View child) {
+    public int getMeasuredHeightWithMargin(View child) {
         return childHeight;
     }
 

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by yarolegovich on 10/25/17.
@@ -67,12 +68,14 @@ public class RecyclerViewProxy {
         return layoutManager.getPosition(view);
     }
 
-    public int getMeasuredWidth(View child) {
-        return layoutManager.getDecoratedMeasuredWidth(child);
+    public int getMeasuredWidthWithMargin(View child) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+        return layoutManager.getDecoratedMeasuredWidth(child) + lp.leftMargin + lp.rightMargin;
     }
 
-    public int getMeasuredHeight(View child) {
-        return layoutManager.getDecoratedMeasuredHeight(child);
+    public int getMeasuredHeightWithMargin(View child) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+        return layoutManager.getDecoratedMeasuredHeight(child) + lp.topMargin + lp.bottomMargin;
     }
 
     public int getWidth() {
