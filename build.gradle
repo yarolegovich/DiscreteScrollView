@@ -26,7 +26,7 @@ ext {
     groupId = 'com.yarolegovich'
     uploadName = 'DiscreteScrollView'
     description = 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.'
-    publishVersion = '1.4.4'
+    publishVersion = '1.4.6'
     licences = ['Apache-2.0']
 
     compileSdkVersion = 27
