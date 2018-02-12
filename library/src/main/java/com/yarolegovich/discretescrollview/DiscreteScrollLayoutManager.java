@@ -65,6 +65,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private int flingThreshold;
     private boolean shouldSlideOnFling;
 
+    private int viewWidth, viewHeight;
+
     @NonNull
     private final ScrollStateListener scrollStateListener;
     private DiscreteScrollItemTransformer itemTransformer;
@@ -105,6 +107,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             currentPosition = 0;
         }
 
+        if (!state.isMeasuring()) {
+            checkRecyclerViewDimensionsChanged();
+        }
+
         //onLayoutChildren may be called multiple times and this check is required so that the flag
         //won't be cleared until onLayoutCompleted
         if (!isFirstOrEmptyLayout) {
@@ -121,6 +127,14 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         fill(recycler);
 
         applyItemTransformToChildren();
+    }
+
+    private void checkRecyclerViewDimensionsChanged() {
+        if (recyclerViewProxy.getWidth() != viewWidth || recyclerViewProxy.getHeight() != viewHeight) {
+            viewWidth = recyclerViewProxy.getWidth();
+            viewHeight = recyclerViewProxy.getHeight();
+            recyclerViewProxy.removeAllViews();
+        }
     }
 
     @Override
