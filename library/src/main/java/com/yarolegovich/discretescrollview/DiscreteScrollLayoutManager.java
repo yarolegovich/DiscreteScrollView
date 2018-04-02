@@ -91,7 +91,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         this.orientationHelper = orientation.createHelper();
         this.recyclerViewProxy = new RecyclerViewProxy(this);
         this.transformClampItemCount = DEFAULT_TRANSFORM_CLAMP_ITEM_COUNT;
-        setAutoMeasureEnabled(true);
     }
 
     @Override
@@ -103,9 +102,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             return;
         }
 
-        if (currentPosition == NO_POSITION) {
-            currentPosition = 0;
-        }
+        ensureValidPosition(state);
 
         if (!state.isMeasuring()) {
             checkRecyclerViewDimensionsChanged();
@@ -127,6 +124,15 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         fill(recycler);
 
         applyItemTransformToChildren();
+    }
+
+    private void ensureValidPosition(RecyclerView.State state) {
+        if (currentPosition == NO_POSITION || currentPosition >= state.getItemCount()) {
+            //currentPosition might have been assigned in onRestoreInstanceState()
+            //which can lead to a crash (position out of bounds) when data set
+            //is not persisted across rotations
+            currentPosition = 0;
+        }
     }
 
     private void checkRecyclerViewDimensionsChanged() {
@@ -500,6 +506,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         pendingScroll += direction.applyTo(distanceToScroll);
         pendingPosition = position;
         startSmoothPendingScroll();
+    }
+
+    @Override
+    public boolean isAutoMeasureEnabled() {
+        return true;
     }
 
     @Override
