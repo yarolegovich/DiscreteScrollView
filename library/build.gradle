@@ -3,7 +3,6 @@ apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 14
@@ -13,6 +12,7 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
