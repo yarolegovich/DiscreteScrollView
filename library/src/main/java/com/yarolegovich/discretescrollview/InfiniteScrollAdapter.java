@@ -148,16 +148,6 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
         }
 
         @Override
-        public void onItemRangeChanged(int positionStart, int itemCount) {
-            onChanged();
-        }
-
-        @Override
-        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-            onChanged();
-        }
-
-        @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
             onChanged();
         }
@@ -165,6 +155,16 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
             onChanged();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            notifyItemRangeChanged(0, getItemCount());
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            notifyItemRangeChanged(0, getItemCount(), payload);
         }
     }
 }
