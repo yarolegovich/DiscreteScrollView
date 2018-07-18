@@ -8,7 +8,7 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.4.7'
+compile 'com.yarolegovich:discrete-scrollview:1.4.8'
 ```
 
 ## Reporting an issue
