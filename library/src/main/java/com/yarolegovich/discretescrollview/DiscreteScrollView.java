@@ -99,6 +99,11 @@ public class DiscreteScrollView extends RecyclerView {
     public int getCurrentItem() {
         return layoutManager.getCurrentPosition();
     }
+    
+    public void setCurrentItem(int position) {
+        layoutManager.setCurrentPosition(position);
+        notifyCurrentItemChanged();
+    }
 
     public void setItemTransformer(DiscreteScrollItemTransformer transformer) {
         layoutManager.setItemTransformer(transformer);
