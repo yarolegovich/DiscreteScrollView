@@ -650,6 +650,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     public int getCurrentPosition() {
         return currentPosition;
     }
+    
+    public void setCurrentPosition(int position) {
+        currentPosition = position;
+    }
 
     @Override
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
