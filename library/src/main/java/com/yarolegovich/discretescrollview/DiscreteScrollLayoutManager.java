@@ -18,6 +18,8 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
 
+import java.util.Locale;
+
 /**
  * Created by yarolegovich on 17.02.2017.
  */
@@ -362,7 +364,13 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (currentPosition == position || pendingPosition != NO_POSITION) {
             return;
         }
-        startSmoothPendingScroll(position);
+        checkTargetPosition(state, position);
+        if (currentPosition == NO_POSITION) {
+            //Layout not happened yet
+            currentPosition = position;
+        } else {
+            startSmoothPendingScroll(position);
+        }
     }
 
     @Override
@@ -709,6 +717,14 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         return orientationHelper.isViewVisible(
                 viewCenter, childHalfWidth, childHalfHeight,
                 endBound, extraLayoutSpace);
+    }
+
+    private void checkTargetPosition(RecyclerView.State state, int targetPosition) {
+        if (targetPosition < 0 || targetPosition >= state.getItemCount()) {
+            throw new IllegalArgumentException(String.format(Locale.US,
+                    "target position out of bounds: position=%d, itemCount=%d",
+                    targetPosition, state.getItemCount()));
+        }
     }
 
     protected void setRecyclerViewProxy(RecyclerViewProxy recyclerViewProxy) {
