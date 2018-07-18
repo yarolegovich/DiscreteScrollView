@@ -160,7 +160,7 @@ public abstract class DiscreteScrollLayoutManagerTest {
     public void updateRecyclerDimensions_recyclerCenterIsInitialized() {
         layoutManager.recyclerCenter.set(0, 0);
 
-        layoutManager.updateRecyclerDimensions();
+        layoutManager.updateRecyclerDimensions(stubState);
 
         assertThat(layoutManager.recyclerCenter.x, is(RECYCLER_WIDTH / 2));
         assertThat(layoutManager.recyclerCenter.y, is(RECYCLER_HEIGHT / 2));

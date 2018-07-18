@@ -106,9 +106,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
         ensureValidPosition(state);
 
-        if (!state.isMeasuring()) {
-            checkRecyclerViewDimensionsChanged();
-        }
+        updateRecyclerDimensions(state);
 
         //onLayoutChildren may be called multiple times and this check is required so that the flag
         //won't be cleared until onLayoutCompleted
@@ -118,8 +116,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                 initChildDimensions(recycler);
             }
         }
-
-        updateRecyclerDimensions();
 
         recyclerViewProxy.detachAndScrapAttachedViews(recycler);
 
@@ -134,14 +130,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
             //which can lead to a crash (position out of bounds) when data set
             //is not persisted across rotations
             currentPosition = 0;
-        }
-    }
-
-    private void checkRecyclerViewDimensionsChanged() {
-        if (recyclerViewProxy.getWidth() != viewWidth || recyclerViewProxy.getHeight() != viewHeight) {
-            viewWidth = recyclerViewProxy.getWidth();
-            viewHeight = recyclerViewProxy.getHeight();
-            recyclerViewProxy.removeAllViews();
         }
     }
 
@@ -174,7 +162,15 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         recyclerViewProxy.detachAndScrapView(viewToMeasure, recycler);
     }
 
-    protected void updateRecyclerDimensions() {
+    protected void updateRecyclerDimensions(RecyclerView.State state) {
+        boolean dimensionsChanged = !state.isMeasuring()
+                && (recyclerViewProxy.getWidth()  != viewWidth
+                ||  recyclerViewProxy.getHeight() != viewHeight);
+        if (dimensionsChanged) {
+            viewWidth = recyclerViewProxy.getWidth();
+            viewHeight = recyclerViewProxy.getHeight();
+            recyclerViewProxy.removeAllViews();
+        }
         recyclerCenter.set(
                 recyclerViewProxy.getWidth() / 2,
                 recyclerViewProxy.getHeight() / 2);
