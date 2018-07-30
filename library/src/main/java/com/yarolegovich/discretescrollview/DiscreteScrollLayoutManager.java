@@ -573,7 +573,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     public void onAdapterChanged(RecyclerView.Adapter oldAdapter, RecyclerView.Adapter newAdapter) {
         pendingPosition = NO_POSITION;
         scrolled = pendingScroll = 0;
-        currentPosition = 0;
+        if (newAdapter instanceof InitialPositionProvider) {
+            currentPosition = ((InitialPositionProvider) newAdapter).getInitialPosition();
+        } else {
+            currentPosition = 0;
+        }
         recyclerViewProxy.removeAllViews();
     }
 
@@ -776,4 +780,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         void onDataSetChangeChangedPosition();
     }
 
+    public interface InitialPositionProvider {
+        int getInitialPosition();
+    }
 }
