@@ -10,9 +10,10 @@ import java.util.Locale;
  * Created by yarolegovich on 28-Apr-17.
  */
 
-public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T> {
+public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T>
+        implements DiscreteScrollLayoutManager.InitialPositionProvider {
 
-    private static final int NOT_INITIALIZED = -1;
+    private static final int CENTER = Integer.MAX_VALUE / 2;
     private static final int RESET_BOUND = 100;
 
     public static <T extends RecyclerView.ViewHolder> InfiniteScrollAdapter<T> wrap(
@@ -23,19 +24,16 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     private RecyclerView.Adapter<T> wrapped;
     private DiscreteScrollLayoutManager layoutManager;
 
-    private int currentRangeStart;
-
     public InfiniteScrollAdapter(@NonNull RecyclerView.Adapter<T> wrapped) {
         this.wrapped = wrapped;
         this.wrapped.registerAdapterDataObserver(new DataSetChangeDelegate());
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         wrapped.onAttachedToRecyclerView(recyclerView);
         if (recyclerView instanceof DiscreteScrollView) {
             layoutManager = (DiscreteScrollLayoutManager) recyclerView.getLayoutManager();
-            currentRangeStart = NOT_INITIALIZED;
         } else {
             String msg = recyclerView.getContext().getString(R.string.dsv_ex_msg_adapter_wrong_recycler);
             throw new RuntimeException(msg);
@@ -43,21 +41,23 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         wrapped.onDetachedFromRecyclerView(recyclerView);
         layoutManager = null;
     }
 
     @Override
-    public T onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (currentRangeStart == NOT_INITIALIZED) {
-            resetRange(0);
-        }
+    public @NonNull T onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return wrapped.onCreateViewHolder(parent, viewType);
     }
 
     @Override
-    public void onBindViewHolder(T holder, int position) {
+    public void onBindViewHolder(@NonNull T holder, int position) {
+        if (isResetRequired(position)) {
+            int resetPosition = CENTER + mapPositionToReal(layoutManager.getCurrentPosition());
+            setPosition(resetPosition);
+            return;
+        }
         wrapped.onBindViewHolder(holder, mapPositionToReal(position));
     }
 
@@ -68,7 +68,7 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
     @Override
     public int getItemCount() {
-        return wrapped.getItemCount() <= 1 ? wrapped.getItemCount() : Integer.MAX_VALUE;
+        return isInfinite() ? Integer.MAX_VALUE : wrapped.getItemCount();
     }
 
     public int getRealItemCount() {
@@ -84,53 +84,61 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     }
 
     public int getClosestPosition(int position) {
+        ensureValidPosition(position);
+        int adapterCurrent = layoutManager.getCurrentPosition();
+        int current = mapPositionToReal(adapterCurrent);
+        if (position == current) {
+            return adapterCurrent;
+        }
+        int delta = position - current;
+        int target = adapterCurrent + delta;
+        int wraparoundTarget = adapterCurrent + (position > current ?
+                delta - wrapped.getItemCount() :
+                wrapped.getItemCount() + delta);
+        int distance = Math.abs(adapterCurrent - target);
+        int wraparoundDistance = Math.abs(adapterCurrent - wraparoundTarget);
+        if (distance == wraparoundDistance) {
+            //Scroll to the right feels more natural, so prefer it
+            return target > adapterCurrent ? target : wraparoundTarget;
+        } else {
+            return distance < wraparoundDistance ? target : wraparoundTarget;
+        }
+    }
+
+    private int mapPositionToReal(int position) {
+        if (position < CENTER) {
+            int rem = (CENTER - position) % wrapped.getItemCount();
+            return rem == 0 ? 0 : wrapped.getItemCount() - rem;
+        } else {
+            return (position - CENTER) % wrapped.getItemCount();
+        }
+    }
+
+    private boolean isResetRequired(int requestedPosition) {
+        return isInfinite()
+            && (requestedPosition <= RESET_BOUND
+            || requestedPosition >= (Integer.MAX_VALUE - RESET_BOUND));
+    }
+
+    private void ensureValidPosition(int position) {
         if (position >= wrapped.getItemCount()) {
             throw new IndexOutOfBoundsException(String.format(Locale.US,
                     "requested position is outside adapter's bounds: position=%d, size=%d",
                     position, wrapped.getItemCount()));
         }
-        int adapterTarget = currentRangeStart + position;
-        int adapterCurrent = layoutManager.getCurrentPosition();
-        if (adapterTarget == adapterCurrent) {
-            return adapterCurrent;
-        } else if (adapterTarget < adapterCurrent) {
-            int adapterTargetNextSet = currentRangeStart + wrapped.getItemCount() + position;
-            return adapterCurrent - adapterTarget < adapterTargetNextSet - adapterCurrent ?
-                    adapterTarget : adapterTargetNextSet;
-        } else {
-            int adapterTargetPrevSet = currentRangeStart - wrapped.getItemCount() + position;
-            return adapterCurrent - adapterTargetPrevSet < adapterTarget - adapterCurrent ?
-                    adapterTargetPrevSet : adapterTarget;
-        }
     }
 
-    private int mapPositionToReal(int position) {
-        int newPosition = position - currentRangeStart;
-        if (newPosition >= wrapped.getItemCount()) {
-            currentRangeStart += wrapped.getItemCount();
-            if (Integer.MAX_VALUE - currentRangeStart <= RESET_BOUND) {
-                resetRange(0);
-            }
-            return 0;
-        } else if (newPosition < 0) {
-            currentRangeStart -= wrapped.getItemCount();
-            if (currentRangeStart <= RESET_BOUND) {
-                resetRange(wrapped.getItemCount() - 1);
-            }
-            return wrapped.getItemCount() - 1;
-        } else {
-            return newPosition;
-        }
+    private boolean isInfinite() {
+        return wrapped.getItemCount() > 1;
     }
 
-    private void resetRange(int newPosition) {
-        if (getItemCount() == 1) {
-            currentRangeStart = 0;
-            layoutManager.scrollToPosition(0);
-        } else {
-            currentRangeStart = Integer.MAX_VALUE / 2;
-            layoutManager.scrollToPosition(currentRangeStart + newPosition);
-        }
+    @Override
+    public int getInitialPosition() {
+        return isInfinite() ? CENTER : 0;
+    }
+
+    private void setPosition(int position) {
+        layoutManager.scrollToPosition(position);
     }
 
     //TODO: handle proper data set change notifications
@@ -138,7 +146,7 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
         @Override
         public void onChanged() {
-            resetRange(0);
+            setPosition(getInitialPosition());
             notifyDataSetChanged();
         }
 
