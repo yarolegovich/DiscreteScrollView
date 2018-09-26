@@ -7,8 +7,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Build;
-import androidx.annotation.ArrayRes;
-import androidx.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -18,6 +16,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.yarolegovich.discretescrollview.sample.R;
+
+import androidx.annotation.ArrayRes;
+import androidx.annotation.RequiresApi;
 
 /**
  * Created by yarolegovich on 08.03.2017.
@@ -61,9 +62,9 @@ public class ForecastView extends LinearLayout {
         setGravity(Gravity.CENTER_HORIZONTAL);
         inflate(getContext(), R.layout.view_forecast, this);
 
-        weatherDescription = (TextView) findViewById(R.id.weather_description);
-        weatherImage = (ImageView) findViewById(R.id.weather_image);
-        weatherTemperature = (TextView) findViewById(R.id.weather_temperature);
+        weatherDescription = findViewById(R.id.weather_description);
+        weatherImage = findViewById(R.id.weather_image);
+        weatherTemperature = findViewById(R.id.weather_temperature);
     }
 
     private void initGradient() {

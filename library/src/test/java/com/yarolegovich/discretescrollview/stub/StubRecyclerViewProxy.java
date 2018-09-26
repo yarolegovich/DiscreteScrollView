@@ -1,13 +1,14 @@
 package com.yarolegovich.discretescrollview.stub;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.RecyclerViewProxy;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static org.mockito.Mockito.mock;
 

@@ -1,17 +1,18 @@
 package com.yarolegovich.discretescrollview.sample.weather;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
-import com.yarolegovich.discretescrollview.sample.R;
 import com.yarolegovich.discretescrollview.sample.DiscreteScrollViewOptions;
+import com.yarolegovich.discretescrollview.sample.R;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by yarolegovich on 08.03.2017.
@@ -32,10 +33,10 @@ public class WeatherActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        forecastView = (ForecastView) findViewById(R.id.forecast_view);
+        forecastView = findViewById(R.id.forecast_view);
 
         forecasts = WeatherStation.get().getForecasts();
-        cityPicker = (DiscreteScrollView) findViewById(R.id.forecast_city_picker);
+        cityPicker = findViewById(R.id.forecast_city_picker);
         cityPicker.setSlideOnFling(true);
         cityPicker.setAdapter(new ForecastAdapter(forecasts));
         cityPicker.addOnItemChangedListener(this);

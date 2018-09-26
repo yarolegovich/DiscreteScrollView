@@ -2,8 +2,6 @@ package com.yarolegovich.discretescrollview.sample.gallery;
 
 import android.app.Activity;
 import android.graphics.Point;
-import androidx.annotation.ColorInt;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,9 @@ import com.bumptech.glide.Glide;
 import com.yarolegovich.discretescrollview.sample.R;
 
 import java.util.List;
+
+import androidx.annotation.ColorInt;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by yarolegovich on 16.03.2017.
@@ -66,7 +67,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         public ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
+            image = itemView.findViewById(R.id.image);
             overlay = itemView.findViewById(R.id.overlay);
         }
 

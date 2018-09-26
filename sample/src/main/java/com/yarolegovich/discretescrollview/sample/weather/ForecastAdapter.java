@@ -2,9 +2,6 @@ package com.yarolegovich.discretescrollview.sample.weather;
 
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +16,10 @@ import com.bumptech.glide.request.target.Target;
 import com.yarolegovich.discretescrollview.sample.R;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by yarolegovich on 08.03.2017.
@@ -69,8 +70,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.city_image);
-            textView = (TextView) itemView.findViewById(R.id.city_name);
+            imageView = itemView.findViewById(R.id.city_image);
+            textView = itemView.findViewById(R.id.city_name);
 
             itemView.findViewById(R.id.container).setOnClickListener(this);
         }

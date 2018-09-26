@@ -1,23 +1,24 @@
 package com.yarolegovich.discretescrollview.sample.shop;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.yarolegovich.discretescrollview.DSVOrientation;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
-import com.yarolegovich.discretescrollview.DSVOrientation;
 import com.yarolegovich.discretescrollview.sample.DiscreteScrollViewOptions;
 import com.yarolegovich.discretescrollview.sample.R;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by yarolegovich on 07.03.2017.
@@ -40,13 +41,13 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
-        currentItemName = (TextView) findViewById(R.id.item_name);
-        currentItemPrice = (TextView) findViewById(R.id.item_price);
-        rateItemButton = (ImageView) findViewById(R.id.item_btn_rate);
+        currentItemName = findViewById(R.id.item_name);
+        currentItemPrice = findViewById(R.id.item_price);
+        rateItemButton = findViewById(R.id.item_btn_rate);
 
         shop = Shop.get();
         data = shop.getData();
-        itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
+        itemPicker = findViewById(R.id.item_picker);
         itemPicker.setOrientation(DSVOrientation.HORIZONTAL);
         itemPicker.addOnItemChangedListener(this);
         infiniteAdapter = InfiniteScrollAdapter.wrap(new ShopAdapter(data));

@@ -2,17 +2,17 @@ package com.yarolegovich.discretescrollview.sample.gallery;
 
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.sample.R;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class GalleryActivity extends AppCompatActivity implements
         DiscreteScrollView.ScrollListener<GalleryAdapter.ViewHolder>,
@@ -34,7 +34,7 @@ public class GalleryActivity extends AppCompatActivity implements
 
         Gallery gallery = Gallery.get();
         List<Image> data = gallery.getData();
-        DiscreteScrollView itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
+        DiscreteScrollView itemPicker = findViewById(R.id.item_picker);
         itemPicker.setAdapter(new GalleryAdapter(data));
         itemPicker.addScrollListener(this);
         itemPicker.addOnItemChangedListener(this);
