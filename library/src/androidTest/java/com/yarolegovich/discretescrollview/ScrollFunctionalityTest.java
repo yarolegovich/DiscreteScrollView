@@ -1,9 +1,9 @@
 package com.yarolegovich.discretescrollview;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.currentPositionIs;

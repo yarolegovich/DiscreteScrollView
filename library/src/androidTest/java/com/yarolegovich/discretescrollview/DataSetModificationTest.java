@@ -1,7 +1,5 @@
 package com.yarolegovich.discretescrollview;
 
-import androidx.test.runner.AndroidJUnit4;
-
 import com.yarolegovich.discretescrollview.context.TestData;
 
 import org.junit.Test;
@@ -10,10 +8,14 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import androidx.test.runner.AndroidJUnit4;
+
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.currentPositionIs;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.doesNotHaveChildren;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by yarolegovich on 2/3/18.

@@ -1,12 +1,5 @@
 package com.yarolegovich.discretescrollview;
 
-import androidx.annotation.CallSuper;
-import androidx.test.espresso.Espresso;
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.idling.CountingIdlingResource;
-import androidx.test.rule.ActivityTestRule;
 import android.view.View;
 
 import com.yarolegovich.discretescrollview.context.TestActivity;
@@ -19,8 +12,14 @@ import org.junit.Rule;
 
 import java.util.List;
 
+import androidx.annotation.CallSuper;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.rule.ActivityTestRule;
+
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.currentPositionIs;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by yarolegovich on 2/3/18.

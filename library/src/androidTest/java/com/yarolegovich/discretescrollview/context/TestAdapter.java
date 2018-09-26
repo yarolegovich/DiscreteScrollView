@@ -1,12 +1,12 @@
 package com.yarolegovich.discretescrollview.context;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by yarolegovich on 2/4/18.

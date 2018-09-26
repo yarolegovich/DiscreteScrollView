@@ -1,13 +1,6 @@
 package com.yarolegovich.discretescrollview.context;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.idling.CountingIdlingResource;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -18,6 +11,13 @@ import com.yarolegovich.discretescrollview.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.idling.CountingIdlingResource;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -94,7 +94,8 @@ public class TestActivity extends AppCompatActivity implements DiscreteScrollVie
 
     }
 
-    public @NonNull List<IdlingResource> getIdlingResources() {
+    public @NonNull
+    List<IdlingResource> getIdlingResources() {
         return Collections.<IdlingResource>singletonList(expectedScrollEndCalls);
     }
 

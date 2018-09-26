@@ -3,9 +3,10 @@ package com.yarolegovich.discretescrollview.context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.ColorInt;
 
 import java.util.Random;
+
+import androidx.annotation.ColorInt;
 
 /**
  * Created by yarolegovich on 2/4/18.
@@ -18,12 +19,14 @@ public class TestData {
 
     public final int id;
     public final Drawable image;
+
     public TestData() {
         id = NEXT_ID++;
         image = new ColorDrawable(generateRandomColor());
     }
 
-    private static @ColorInt int generateRandomColor() {
+    private static @ColorInt
+    int generateRandomColor() {
         return Color.argb(255,
                 random.nextInt(256),
                 random.nextInt(256),

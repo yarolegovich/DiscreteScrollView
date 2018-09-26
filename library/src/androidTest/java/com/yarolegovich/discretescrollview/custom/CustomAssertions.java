@@ -1,16 +1,19 @@
 package com.yarolegovich.discretescrollview.custom;
 
-import androidx.test.espresso.NoMatchingViewException;
-import androidx.test.espresso.ViewAssertion;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import static org.hamcrest.Matchers.*;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.ViewAssertion;
+
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 
 /**
@@ -54,7 +57,7 @@ public class CustomAssertions {
         for (int i = 0; i < dsv.getChildCount(); i++) {
             View child = dsv.getChildAt(i);
             if (centerX == (child.getLeft() + child.getWidth() / 2)
-                && centerY == (child.getTop() + child.getHeight() / 2)) {
+                    && centerY == (child.getTop() + child.getHeight() / 2)) {
                 return child;
             }
         }
