@@ -79,7 +79,7 @@
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/item_btn_buy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

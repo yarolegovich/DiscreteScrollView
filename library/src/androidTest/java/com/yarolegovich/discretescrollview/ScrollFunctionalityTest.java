@@ -1,11 +1,11 @@
 package com.yarolegovich.discretescrollview;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.matcher.ViewMatchers.assertThat;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.currentPositionIs;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
