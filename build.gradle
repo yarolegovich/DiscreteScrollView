@@ -4,7 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.novoda:bintray-release:0.8.0'
     }
 }
@@ -29,9 +29,6 @@ ext {
     publishVersion = '1.4.9'
     licences = ['Apache-2.0']
 
-    compileSdkVersion = 27
-    buildToolsVersion = '26.0.2'
-    targetSdkVersion = 27
-
-    supportLibVersion = '27.1.1'
+    compileSdkVersion = 28
+    targetSdkVersion = 28
 }
