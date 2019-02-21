@@ -783,4 +783,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     public interface InitialPositionProvider {
         int getInitialPosition();
     }
+
+    public void setScrollEnabled(boolean isScrollEnable){
+        orientationHelper.setScrollEnabled(isScrollEnable);
+    }
+
 }

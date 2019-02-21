@@ -24,7 +24,7 @@ public enum DSVOrientation {
     //Package private
     abstract Helper createHelper();
 
-    interface Helper {
+    public interface Helper {
 
         int getViewEnd(int recyclerWidth, int recyclerHeight);
 
@@ -51,9 +51,13 @@ public enum DSVOrientation {
         boolean canScrollVertically();
 
         boolean canScrollHorizontally();
+
+
+        void setScrollEnabled(boolean isScrollEnabled);
     }
 
     protected static class HorizontalHelper implements Helper {
+        boolean isScrollEnabled = true;
 
         @Override
         public int getViewEnd(int recyclerWidth, int recyclerHeight) {
@@ -64,6 +68,7 @@ public enum DSVOrientation {
         public int getDistanceToChangeCurrent(int childWidth, int childHeight) {
             return childWidth;
         }
+
 
         @Override
         public void setCurrentViewCenter(Point recyclerCenter, int scrolled, Point outPoint) {
@@ -115,7 +120,12 @@ public enum DSVOrientation {
 
         @Override
         public boolean canScrollHorizontally() {
-            return true;
+            return isScrollEnabled;
+        }
+
+        @Override
+        public void setScrollEnabled(boolean isScrollEnabled) {
+            this.isScrollEnabled = isScrollEnabled;
         }
 
         @Override
@@ -136,6 +146,7 @@ public enum DSVOrientation {
 
 
     protected static class VerticalHelper implements Helper {
+        boolean isScrollEnabled = true;
 
         @Override
         public int getViewEnd(int recyclerWidth, int recyclerHeight) {
@@ -201,8 +212,13 @@ public enum DSVOrientation {
         }
 
         @Override
+        public void setScrollEnabled(boolean isScrollEnabled) {
+            this.isScrollEnabled = isScrollEnabled;
+        }
+
+        @Override
         public boolean canScrollVertically() {
-            return true;
+            return isScrollEnabled;
         }
 
         @Override

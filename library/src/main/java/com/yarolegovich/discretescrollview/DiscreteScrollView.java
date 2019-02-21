@@ -32,6 +32,8 @@ public class DiscreteScrollView extends RecyclerView {
 
     private boolean isOverScrollEnabled;
 
+    private boolean isScrollEnabled;
+
     public DiscreteScrollView(Context context) {
         super(context);
         init(null);
@@ -63,7 +65,7 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager = new DiscreteScrollLayoutManager(
                 getContext(), new ScrollStateListener(),
                 DSVOrientation.values()[orientation]);
-        setLayoutManager(layoutManager);
+          setLayoutManager(layoutManager);
     }
 
     @Override
@@ -289,5 +291,10 @@ public class DiscreteScrollView extends RecyclerView {
          * If data set is empty, viewHolder will be null and adapterPosition will be NO_POSITION
          */
         void onCurrentItemChanged(@Nullable T viewHolder, int adapterPosition);
+    }
+
+    public void setScrollEnabled(boolean scrollEnabled) {
+        isScrollEnabled = scrollEnabled;
+        layoutManager.setScrollEnabled(isScrollEnabled);
     }
 }
