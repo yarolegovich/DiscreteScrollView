@@ -112,10 +112,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         //won't be cleared until onLayoutCompleted
         if (!isFirstOrEmptyLayout) {
             isFirstOrEmptyLayout = recyclerViewProxy.getChildCount() == 0;
-            if (isFirstOrEmptyLayout) {
-                initChildDimensions(recycler);
-            }
         }
+
+        initChildDimensions(recycler);
 
         recyclerViewProxy.detachAndScrapAttachedViews(recycler);
 
@@ -145,7 +144,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     protected void initChildDimensions(RecyclerView.Recycler recycler) {
-        View viewToMeasure = recyclerViewProxy.getMeasuredChildForAdapterPosition(0, recycler);
+        View viewToMeasure = recyclerViewProxy.getMeasuredChildForAdapterPosition(currentPosition, recycler);
 
         int childViewWidth = recyclerViewProxy.getMeasuredWidthWithMargin(viewToMeasure);
         int childViewHeight = recyclerViewProxy.getMeasuredHeightWithMargin(viewToMeasure);
@@ -158,8 +157,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
                 childViewHeight);
 
         extraLayoutSpace = scrollToChangeCurrent * offscreenItems;
-
-        recyclerViewProxy.detachAndScrapView(viewToMeasure, recycler);
     }
 
     protected void updateRecyclerDimensions(RecyclerView.State state) {
@@ -169,7 +166,6 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (dimensionsChanged) {
             viewWidth = recyclerViewProxy.getWidth();
             viewHeight = recyclerViewProxy.getHeight();
-            recyclerViewProxy.removeAllViews();
         }
         recyclerCenter.set(
                 recyclerViewProxy.getWidth() / 2,
@@ -224,7 +220,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         if (position < 0) return;
         View v = detachedCache.get(position);
         if (v == null) {
-            v = recyclerViewProxy.getMeasuredChildForAdapterPosition(position, recycler);
+            v = recyclerViewProxy.addMeasuredChildForAdapterPosition(position, recycler);
             recyclerViewProxy.layoutDecoratedWithMargins(v,
                     viewCenter.x - childHalfWidth, viewCenter.y - childHalfHeight,
                     viewCenter.x + childHalfWidth, viewCenter.y + childHalfHeight);
