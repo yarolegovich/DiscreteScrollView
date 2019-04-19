@@ -46,6 +46,14 @@ public class StubRecyclerViewProxy extends RecyclerViewProxy {
     }
 
     @Override
+    public View addMeasuredChildForAdapterPosition(int position, RecyclerView.Recycler recycler) {
+        if (position < adapterItemCount) {
+            return new StubChildInfo(0, position).view;
+        }
+        throw new IndexOutOfBoundsException();
+    }
+
+    @Override
     public View getMeasuredChildForAdapterPosition(int position, RecyclerView.Recycler recycler) {
         if (position < adapterItemCount) {
             return new StubChildInfo(0, position).view;

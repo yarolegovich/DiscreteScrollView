@@ -1,7 +1,6 @@
 package com.yarolegovich.discretescrollview;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,9 +48,18 @@ public class RecyclerViewProxy {
         return layoutManager.getItemCount();
     }
 
-    public View getMeasuredChildForAdapterPosition(int position, RecyclerView.Recycler recycler) {
+    public View addMeasuredChildForAdapterPosition(int position, RecyclerView.Recycler recycler) {
         View view = recycler.getViewForPosition(position);
         layoutManager.addView(view);
+        layoutManager.measureChildWithMargins(view, 0, 0);
+        return view;
+    }
+
+    public View getMeasuredChildForAdapterPosition(int position, RecyclerView.Recycler recycler) {
+        View view = layoutManager.findViewByPosition(position);
+        if (view == null) {
+            view = recycler.getViewForPosition(position);
+        }
         layoutManager.measureChildWithMargins(view, 0, 0);
         return view;
     }
