@@ -2,12 +2,13 @@ package com.yarolegovich.discretescrollview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
 import com.yarolegovich.discretescrollview.util.ScrollListenerAdapter;
@@ -108,11 +109,11 @@ public class DiscreteScrollView extends RecyclerView {
         layoutManager.setTimeForItemSettle(millis);
     }
 
-    public void setSlideOnFling(boolean result){
+    public void setSlideOnFling(boolean result) {
         layoutManager.setShouldSlideOnFling(result);
     }
 
-    public void setSlideOnFlingThreshold(int threshold){
+    public void setSlideOnFlingThreshold(int threshold) {
         layoutManager.setSlideOnFlingThreshold(threshold);
     }
 
@@ -177,8 +178,8 @@ public class DiscreteScrollView extends RecyclerView {
                               ViewHolder currentHolder, ViewHolder newHolder) {
         for (ScrollStateChangeListener listener : scrollStateChangeListeners) {
             listener.onScroll(position, currentIndex, newIndex,
-                currentHolder,
-                newHolder);
+                    currentHolder,
+                    newHolder);
         }
     }
 
@@ -240,9 +241,9 @@ public class DiscreteScrollView extends RecyclerView {
             int newIndex = layoutManager.getNextPosition();
             if (currentIndex != newIndex) {
                 notifyScroll(currentViewPosition,
-                    currentIndex, newIndex,
-                    getViewHolder(currentIndex),
-                    getViewHolder(newIndex));
+                        currentIndex, newIndex,
+                        getViewHolder(currentIndex),
+                        getViewHolder(newIndex));
             }
         }
 

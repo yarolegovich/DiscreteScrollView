@@ -1,7 +1,8 @@
 package com.yarolegovich.discretescrollview.transform;
 
-import android.support.annotation.IntDef;
 import android.view.View;
+
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -110,7 +111,7 @@ public class Pivot {
 
     @IntDef({AXIS_X, AXIS_Y})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface Axis{
+    public @interface Axis {
     }
 }
 

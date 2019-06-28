@@ -1,8 +1,9 @@
 package com.yarolegovich.discretescrollview;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Locale;
 
@@ -47,7 +48,8 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
     }
 
     @Override
-    public @NonNull T onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public @NonNull
+    T onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return wrapped.onCreateViewHolder(parent, viewType);
     }
 
@@ -116,8 +118,8 @@ public class InfiniteScrollAdapter<T extends RecyclerView.ViewHolder> extends Re
 
     private boolean isResetRequired(int requestedPosition) {
         return isInfinite()
-            && (requestedPosition <= RESET_BOUND
-            || requestedPosition >= (Integer.MAX_VALUE - RESET_BOUND));
+                && (requestedPosition <= RESET_BOUND
+                || requestedPosition >= (Integer.MAX_VALUE - RESET_BOUND));
     }
 
     private void ensureValidPosition(int position) {

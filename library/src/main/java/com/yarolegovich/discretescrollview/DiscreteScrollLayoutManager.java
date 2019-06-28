@@ -5,16 +5,15 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.accessibility.AccessibilityEventCompat;
-import android.support.v4.view.accessibility.AccessibilityRecordCompat;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yarolegovich.discretescrollview.transform.DiscreteScrollItemTransformer;
 
@@ -164,8 +163,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     protected void updateRecyclerDimensions(RecyclerView.State state) {
         boolean dimensionsChanged = !state.isMeasuring()
-                && (recyclerViewProxy.getWidth()  != viewWidth
-                ||  recyclerViewProxy.getHeight() != viewHeight);
+                && (recyclerViewProxy.getWidth() != viewWidth
+                || recyclerViewProxy.getHeight() != viewHeight);
         if (dimensionsChanged) {
             viewWidth = recyclerViewProxy.getWidth();
             viewHeight = recyclerViewProxy.getHeight();
@@ -655,9 +654,8 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         if (recyclerViewProxy.getChildCount() > 0) {
-            final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
-            record.setFromIndex(getPosition(getFirstChild()));
-            record.setToIndex(getPosition(getLastChild()));
+            event.setFromIndex(getPosition(getFirstChild()));
+            event.setToIndex(getPosition(getLastChild()));
         }
     }
 

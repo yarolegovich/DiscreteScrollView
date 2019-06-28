@@ -1,12 +1,13 @@
 package com.yarolegovich.discretescrollview.transform;
 
-import android.support.annotation.FloatRange;
 import android.view.View;
+
+import androidx.annotation.FloatRange;
 
 /**
  * Created by yarolegovich on 03.03.2017.
  */
-public class  ScaleTransformer implements DiscreteScrollItemTransformer {
+public class ScaleTransformer implements DiscreteScrollItemTransformer {
 
     private Pivot pivotX;
     private Pivot pivotY;
