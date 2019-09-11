@@ -1,7 +1,8 @@
 package com.yarolegovich.discretescrollview;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yarolegovich.discretescrollview.stub.StubRecyclerViewProxy;
 
@@ -14,12 +15,19 @@ import java.util.List;
 
 import static com.yarolegovich.discretescrollview.DiscreteScrollLayoutManager.NO_POSITION;
 import static com.yarolegovich.discretescrollview.DiscreteScrollLayoutManager.SCROLL_TO_SNAP_TO_ANOTHER_ITEM;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.both;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isIn;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Matchers.any;
-import static org.junit.Assert.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;

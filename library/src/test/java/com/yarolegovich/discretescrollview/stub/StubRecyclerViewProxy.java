@@ -1,8 +1,9 @@
 package com.yarolegovich.discretescrollview.stub;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yarolegovich.discretescrollview.RecyclerViewProxy;
 
