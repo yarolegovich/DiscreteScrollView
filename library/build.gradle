@@ -24,6 +24,7 @@ dependencies {
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
 }
 
