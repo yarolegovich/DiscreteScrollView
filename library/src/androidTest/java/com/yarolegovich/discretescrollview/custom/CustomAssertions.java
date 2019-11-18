@@ -1,16 +1,16 @@
 package com.yarolegovich.discretescrollview.custom;
 
-import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.ViewAssertion;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import androidx.test.espresso.NoMatchingViewException;
+import androidx.test.espresso.ViewAssertion;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import static org.hamcrest.Matchers.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
 
 
 /**
