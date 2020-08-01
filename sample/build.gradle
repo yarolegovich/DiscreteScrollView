@@ -26,5 +26,5 @@ dependencies {
     implementation deps.glide
     implementation deps.materialPrefs
 
-    implementation 'com.yarolegovich:discrete-scrollview:1.5.0'
+    implementation project(':library')
 }

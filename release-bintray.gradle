@@ -9,7 +9,7 @@ def upload = [
         groupId    : 'com.yarolegovich',
         uploadName : 'DiscreteScrollView',
         description: 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.',
-        version    : '1.5.0',
+        version    : '1.5.1',
         licences   : ['Apache-2.0']
 ]
 

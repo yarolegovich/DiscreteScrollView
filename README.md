@@ -8,7 +8,7 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 ## Gradle 
 Add this into your dependencies block.
 ```
-compile 'com.yarolegovich:discrete-scrollview:1.5.0'
+compile 'com.yarolegovich:discrete-scrollview:1.5.1'
 ```
 
 ## Reporting an issue
@@ -129,6 +129,12 @@ int getRealPosition(int position);
 int getClosestPosition(int position); 
 ```
 Currently `InfiniteScrollAdapter` handles data set changes inefficiently, so your contributions are welcome. 
+#### Disabling scroll
+It's possible to forbid user scroll in any or specific direction using:
+```java
+scrollView.setScrollConfig(config);
+```
+Where `config` is an instance of `DSVScrollConfig` enum. The default value enables scroll in any direction.
 #### Callbacks
 * Scroll state changes:
 ```java
