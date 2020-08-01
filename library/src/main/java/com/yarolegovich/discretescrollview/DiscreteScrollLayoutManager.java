@@ -12,8 +12,6 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.accessibility.AccessibilityEventCompat;
-import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +22,7 @@ import java.util.Locale;
 /**
  * Created by yarolegovich on 17.02.2017.
  */
-class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
+public class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     static final int NO_POSITION = -1;
 
@@ -69,6 +67,9 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     private boolean shouldSlideOnFling;
 
     private int viewWidth, viewHeight;
+
+    @NonNull
+    private DSVScrollConfig scrollConfig = DSVScrollConfig.ENABLED;
 
     @NonNull
     private final ScrollStateListener scrollStateListener;
@@ -451,6 +452,12 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
         pendingScroll = 0;
     }
 
+    public boolean isFlingDisallowed(int velocityX, int velocityY) {
+        int velocity = orientationHelper.getFlingVelocity(velocityX, velocityY);
+        Direction direction = Direction.fromDelta(velocity);
+        return scrollConfig.isScrollBlocked(direction);
+    }
+
     public void onFling(int velocityX, int velocityY) {
         int velocity = orientationHelper.getFlingVelocity(velocityX, velocityY);
         int throttleValue = shouldSlideOnFling ? Math.abs(velocity / flingThreshold) : 1;
@@ -475,6 +482,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     protected int calculateAllowedScrollIn(Direction direction) {
         if (pendingScroll != 0) {
             return Math.abs(pendingScroll);
+        }
+        if (currentScrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+            if (scrollConfig.isScrollBlocked(direction)) {
+                return direction.reverse().applyTo(scrolled);
+            }
         }
         int allowedScroll;
         boolean isBoundReached;
@@ -646,6 +658,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
 
     public void setSlideOnFlingThreshold(int threshold) {
         flingThreshold = threshold;
+    }
+
+    public void setScrollConfig(@NonNull DSVScrollConfig config) {
+        scrollConfig = config;
     }
 
     public int getCurrentPosition() {

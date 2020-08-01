@@ -79,6 +79,9 @@ public class DiscreteScrollView extends RecyclerView {
 
     @Override
     public boolean fling(int velocityX, int velocityY) {
+        if (layoutManager.isFlingDisallowed(velocityX, velocityY)) {
+            return false;
+        }
         boolean isFling = super.fling(velocityX, velocityY);
         if (isFling) {
             layoutManager.onFling(velocityX, velocityY);
@@ -123,6 +126,10 @@ public class DiscreteScrollView extends RecyclerView {
 
     public void setOffscreenItems(int items) {
         layoutManager.setOffscreenItems(items);
+    }
+
+    public void setScrollConfig(@NonNull DSVScrollConfig config) {
+        layoutManager.setScrollConfig(config);
     }
 
     public void setClampTransformProgressAfter(@IntRange(from = 1) int itemCount) {
