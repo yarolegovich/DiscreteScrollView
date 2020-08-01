@@ -30,6 +30,12 @@ public class DiscreteScrollView extends RecyclerView {
 
     private List<ScrollStateChangeListener> scrollStateChangeListeners;
     private List<OnItemChangedListener> onItemChangedListeners;
+    private Runnable notifyItemChangedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            notifyCurrentItemChanged();
+        }
+    };
 
     private boolean isOverScrollEnabled;
 
@@ -95,6 +101,15 @@ public class DiscreteScrollView extends RecyclerView {
     public ViewHolder getViewHolder(int position) {
         View view = layoutManager.findViewByPosition(position);
         return view != null ? getChildViewHolder(view) : null;
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        int currentPosition = layoutManager.getCurrentPosition();
+        super.scrollToPosition(position);
+        if (currentPosition != position) {
+            notifyCurrentItemChanged();
+        }
     }
 
     /**
@@ -197,12 +212,17 @@ public class DiscreteScrollView extends RecyclerView {
     }
 
     private void notifyCurrentItemChanged() {
+        removeCallbacks(notifyItemChangedRunnable);
         if (onItemChangedListeners.isEmpty()) {
             return;
         }
         int current = layoutManager.getCurrentPosition();
         ViewHolder currentHolder = getViewHolder(current);
-        notifyCurrentItemChanged(currentHolder, current);
+        if (currentHolder == null) {
+            post(notifyItemChangedRunnable);
+        } else {
+            notifyCurrentItemChanged(currentHolder, current);
+        }
     }
 
     private class ScrollStateListener implements DiscreteScrollLayoutManager.ScrollStateListener {
@@ -216,6 +236,7 @@ public class DiscreteScrollView extends RecyclerView {
 
         @Override
         public void onScrollStart() {
+            removeCallbacks(notifyItemChangedRunnable);
             if (scrollStateChangeListeners.isEmpty()) {
                 return;
             }
@@ -256,12 +277,7 @@ public class DiscreteScrollView extends RecyclerView {
 
         @Override
         public void onCurrentViewFirstLayout() {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    notifyCurrentItemChanged();
-                }
-            });
+            notifyCurrentItemChanged();
         }
 
         @Override
