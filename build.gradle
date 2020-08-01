@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
     }
 }
 
@@ -22,13 +23,6 @@ task clean(type: Delete) {
 }
 
 ext {
-    userOrg = 'yarolegovich'
-    groupId = 'com.yarolegovich'
-    uploadName = 'DiscreteScrollView'
-    desc = 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.'
-    publishVersion = '1.4.9'
-    licences = ['Apache-2.0']
-
     compileSdkVersion = 29
     buildToolsVersion = '29.0.2'
     targetSdkVersion = 29

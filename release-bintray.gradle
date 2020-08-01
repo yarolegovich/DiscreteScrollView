@@ -1,0 +1,60 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+def upload = [
+        user       : 'yarolegovich',
+        artifactId : 'discrete-scrollview',
+        userOrg    : 'yarolegovich',
+        repository : 'maven',
+        groupId    : 'com.yarolegovich',
+        uploadName : 'DiscreteScrollView',
+        description: 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.',
+        version    : '1.5.0',
+        licences   : ['Apache-2.0']
+]
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+version upload.version
+
+afterEvaluate {
+
+    publishing {
+        publications {
+            LibRelease(MavenPublication) {
+                from components.release
+
+                artifact androidSourcesJar
+
+                artifactId upload.artifactId
+                groupId upload.groupId
+                version upload.version
+            }
+        }
+    }
+
+    Properties localProps = new Properties()
+    localProps.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintray {
+        user = upload.user
+        key = localProps.getProperty('bintray.api_key')
+        publications = ['LibRelease']
+        configurations = ['archives']
+        pkg {
+            name = upload.uploadName
+            repo = upload.repository
+            userOrg = upload.userOrg
+            licenses = upload.licences
+            publish = true
+            dryRun = false
+            version {
+                name = upload.version
+                desc = upload.description
+            }
+        }
+    }
+}
