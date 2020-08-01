@@ -7,12 +7,12 @@
     android:layout_height="match_parent"
     tools:context="com.yarolegovich.discretescrollview.sample.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <include layout="@layout/toolbar" />
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"

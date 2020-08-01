@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="100dp"
     android:layout_height="116dp"
@@ -13,6 +13,7 @@
         android:layout_gravity="center"
         android:layout_margin="4dp"
         android:background="?android:selectableItemBackground"
+        android:focusable="true"
         android:clickable="true">
 
         <TextView
@@ -36,9 +37,10 @@
             android:adjustViewBounds="true"
             android:scaleType="centerInside"
             android:tint="@color/grayIconTint"
-            tools:src="@drawable/washington" />
+            tools:src="@drawable/washington"
+            tools:ignore="ContentDescription" />
 
     </FrameLayout>
 
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

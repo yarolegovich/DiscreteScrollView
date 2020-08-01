@@ -1,18 +1,18 @@
 package com.yarolegovich.discretescrollview.sample.shop;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.yarolegovich.discretescrollview.DSVOrientation;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
-import com.yarolegovich.discretescrollview.DSVOrientation;
 import com.yarolegovich.discretescrollview.sample.DiscreteScrollViewOptions;
 import com.yarolegovich.discretescrollview.sample.R;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by yarolegovich on 07.03.2017.
  */
 
-public class ShopActivity extends AppCompatActivity implements DiscreteScrollView.OnItemChangedListener,
+public class ShopActivity extends AppCompatActivity implements DiscreteScrollView.OnItemChangedListener<ShopAdapter.ViewHolder>,
         View.OnClickListener {
 
     private List<Item> data;
@@ -33,7 +33,7 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     private TextView currentItemPrice;
     private ImageView rateItemButton;
     private DiscreteScrollView itemPicker;
-    private InfiniteScrollAdapter infiniteAdapter;
+    private InfiniteScrollAdapter<?> infiniteAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,8 +108,8 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
     }
 
     @Override
-    public void onCurrentItemChanged(@Nullable RecyclerView.ViewHolder viewHolder, int position) {
-        int positionInDataSet = infiniteAdapter.getRealPosition(position);
+    public void onCurrentItemChanged(@Nullable ShopAdapter.ViewHolder viewHolder, int adapterPosition) {
+        int positionInDataSet = infiniteAdapter.getRealPosition(adapterPosition);
         onItemChanged(data.get(positionInDataSet));
     }
 

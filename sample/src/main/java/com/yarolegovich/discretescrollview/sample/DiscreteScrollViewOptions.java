@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.InfiniteScrollAdapter;
 
@@ -45,22 +46,25 @@ public class DiscreteScrollViewOptions {
                 defaultPrefs().unregisterOnSharedPreferenceChangeListener(timeChangeListener);
             }
         });
-        bsd.findViewById(R.id.dialog_btn_dismiss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bsd.dismiss();
-            }
-        });
+        View dismissBtn = bsd.findViewById(R.id.dialog_btn_dismiss);
+        if (dismissBtn != null) {
+            dismissBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    bsd.dismiss();
+                }
+            });
+        }
         bsd.show();
     }
 
     public static void smoothScrollToUserSelectedPosition(final DiscreteScrollView scrollView, View anchor) {
         PopupMenu popupMenu = new PopupMenu(scrollView.getContext(), anchor);
         Menu menu = popupMenu.getMenu();
-        final RecyclerView.Adapter adapter = scrollView.getAdapter();
+        final RecyclerView.Adapter<?> adapter = scrollView.getAdapter();
         int itemCount = (adapter instanceof InfiniteScrollAdapter) ?
-                ((InfiniteScrollAdapter) adapter).getRealItemCount() :
-                adapter.getItemCount();
+                ((InfiniteScrollAdapter<?>) adapter).getRealItemCount() :
+                (adapter != null ? adapter.getItemCount() : 0);
         for (int i = 0; i < itemCount; i++) {
             menu.add(String.valueOf(i + 1));
         }
@@ -69,7 +73,7 @@ public class DiscreteScrollViewOptions {
             public boolean onMenuItemClick(MenuItem item) {
                 int destination = Integer.parseInt(String.valueOf(item.getTitle())) - 1;
                 if (adapter instanceof InfiniteScrollAdapter) {
-                    destination = ((InfiniteScrollAdapter) adapter).getClosestPosition(destination);
+                    destination = ((InfiniteScrollAdapter<?>) adapter).getClosestPosition(destination);
                 }
                 scrollView.smoothScrollToPosition(destination);
                 return true;

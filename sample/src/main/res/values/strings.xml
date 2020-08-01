@@ -26,4 +26,8 @@
     <string name="pref_key_transition_time" translatable="false">pref_key_transition_time</string>
 
     <string name="mi_rate_on_github">Rate on GitHub</string>
+
+    <string name="cd_back">Back</string>
+    <string name="cd_comment">Comment</string>
+    <string name="cd_favourite">Favourite</string>
 </resources>

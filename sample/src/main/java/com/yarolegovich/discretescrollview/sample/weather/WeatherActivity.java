@@ -1,10 +1,12 @@
 package com.yarolegovich.discretescrollview.sample.weather;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity; 
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.sample.R;
@@ -74,7 +76,9 @@ public class WeatherActivity extends AppCompatActivity implements
             @Nullable ForecastAdapter.ViewHolder currentHolder,
             @Nullable ForecastAdapter.ViewHolder newHolder) {
         Forecast current = forecasts.get(currentIndex);
-        if (newIndex >= 0 && newIndex < cityPicker.getAdapter().getItemCount()) {
+        RecyclerView.Adapter<?> adapter = cityPicker.getAdapter();
+        int itemCount = adapter != null ? adapter.getItemCount() : 0;
+        if (newIndex >= 0 && newIndex < itemCount) {
             Forecast next = forecasts.get(newIndex);
             forecastView.onScroll(1f - Math.abs(position), current, next);
         }

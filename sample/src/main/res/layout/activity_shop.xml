@@ -16,6 +16,7 @@
         android:layout_gravity="start"
         android:layout_margin="8dp"
         android:padding="8dp"
+        android:contentDescription="@string/cd_back"
         android:src="@drawable/ic_arrow_back_black_24dp" />
 
     <Space
@@ -72,6 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:contentDescription="@string/cd_comment"
             android:src="@drawable/ic_comment_text_outline_black_24dp"
             android:tint="@color/shopSecondary" />
 
@@ -79,7 +81,7 @@
             android:layout_width="16dp"
             android:layout_height="wrap_content" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/item_btn_buy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,6 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            android:contentDescription="@string/cd_favourite"
             android:src="@drawable/ic_star_border_black_24dp"
             android:tint="@color/shopSecondary" />
 
@@ -118,7 +121,8 @@
             android:layout_weight="1"
             android:text="@string/btn_smooth_scroll"
             android:textAllCaps="true"
-            android:textColor="@color/shopAccent" />
+            android:textColor="@color/shopAccent"
+            tools:ignore="NestedWeights" />
 
         <Button
             android:id="@+id/btn_transition_time"

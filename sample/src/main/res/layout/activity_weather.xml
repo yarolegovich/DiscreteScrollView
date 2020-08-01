@@ -57,6 +57,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="32dp"
         android:padding="8dp"
+        android:contentDescription="@string/cd_back"
         android:src="@drawable/ic_arrow_back_black_24dp"
         android:tint="@android:color/white" />
 

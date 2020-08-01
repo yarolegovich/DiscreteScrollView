@@ -1,6 +1,7 @@
 package com.yarolegovich.discretescrollview;
 
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.yarolegovich.discretescrollview.context.TestData;
 
@@ -10,10 +11,12 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.matcher.ViewMatchers.assertThat;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.currentPositionIs;
 import static com.yarolegovich.discretescrollview.custom.CustomAssertions.doesNotHaveChildren;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Created by yarolegovich on 2/3/18.
@@ -214,9 +217,7 @@ public class DataSetModificationTest extends DiscreteScrollViewTest {
             @Override
             public void run() {
                 List<TestData> data = adapter.getData();
-                for (int i = numOfItemsToRemove - 1; i >= 0; i--) {
-                    data.remove(i);
-                }
+                data.subList(0, numOfItemsToRemove).clear();
                 adapter.notifyDataSetChanged();
             }
         });
@@ -264,8 +265,8 @@ public class DataSetModificationTest extends DiscreteScrollViewTest {
             public void run() {
                 List<TestData> data = adapter.getData();
                 final int itemsToRemove = data.size() / 2;
-                for (int i = 0; i < itemsToRemove; i++) {
-                    data.remove(0);
+                if (itemsToRemove > 0) {
+                    data.subList(0, itemsToRemove).clear();
                 }
                 adapter.notifyDataSetChanged();
                 scrollView.scrollToPosition(targetPosition);

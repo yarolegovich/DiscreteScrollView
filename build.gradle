@@ -4,8 +4,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
-        classpath 'com.novoda:bintray-release:0.8.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
     }
 }
 
@@ -13,6 +12,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://maven.google.com" }
+        maven { url "https://jitpack.io" }
         google()
     }
 }
@@ -25,13 +25,31 @@ ext {
     userOrg = 'yarolegovich'
     groupId = 'com.yarolegovich'
     uploadName = 'DiscreteScrollView'
-    description = 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.'
+    desc = 'A scrollable list of items that centers the current element and provides easy-to-use APIs for cool item animations.'
     publishVersion = '1.4.9'
     licences = ['Apache-2.0']
 
-    compileSdkVersion = 27
-    buildToolsVersion = '26.0.2'
-    targetSdkVersion = 27
+    compileSdkVersion = 29
+    buildToolsVersion = '29.0.2'
+    targetSdkVersion = 29
 
-    supportLibVersion = '27.1.1'
+    deps = [
+            recycler      : 'androidx.recyclerview:recyclerview:1.0.0',
+            designSupport : 'com.google.android.material:material:1.0.0',
+            annotations   : 'androidx.annotation:annotation:1.1.0',
+            androidxCompat: 'androidx.appcompat:appcompat:1.1.0',
+            glide         : 'com.github.bumptech.glide:glide:4.11.0',
+            materialPrefs : 'com.yarolegovich:mp:1.1.6'
+    ]
+
+    testDeps = [
+            hamcrest    : 'org.hamcrest:hamcrest-library:1.3',
+            mockito     : 'org.mockito:mockito-core:2.13.0',
+            jUnit       : 'junit:junit:4.13',
+            robolectric : 'org.robolectric:robolectric:3.0',
+            espresso    : 'androidx.test.espresso:espresso-core:3.1.0',
+            androidJUnit: 'androidx.test.ext:junit:1.1.1',
+            testRules   : 'androidx.test:rules:1.1.1',
+            testRunner  : 'androidx.test:runner:1.1.1'
+    ]
 }

@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="160dp"
         android:scaleType="centerInside"
+        tools:ignore="ContentDescription"
         tools:src="@drawable/partly_cloudy" />
 
     <LinearLayout
@@ -34,9 +35,9 @@
             android:layout_marginTop="14dp"
             android:fontFamily="sans-serif-light"
             android:gravity="top"
-            android:text="°C"
             android:textColor="@android:color/white"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            tools:text="°C" />
     </LinearLayout>
 
     <Space

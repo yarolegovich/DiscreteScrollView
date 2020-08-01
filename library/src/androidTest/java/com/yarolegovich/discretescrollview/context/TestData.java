@@ -3,7 +3,8 @@ package com.yarolegovich.discretescrollview.context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
+
+import androidx.annotation.ColorInt;
 
 import java.util.Random;
 
@@ -23,7 +24,8 @@ public class TestData {
         image = new ColorDrawable(generateRandomColor());
     }
 
-    private static @ColorInt int generateRandomColor() {
+    private static @ColorInt
+    int generateRandomColor() {
         return Color.argb(255,
                 random.nextInt(256),
                 random.nextInt(256),

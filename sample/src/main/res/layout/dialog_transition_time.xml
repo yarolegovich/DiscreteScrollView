@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:padding="12dp"
+        android:contentDescription="@string/cd_back"
         android:src="@drawable/ic_close_black_24dp"
         android:tint="@color/grayIconTint" />
 </FrameLayout>
