@@ -662,9 +662,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private float getCenterRelativePositionOf(View v, int maxDistance) {
+        float childCenterX = getDecoratedLeft(v) + v.getWidth() * 0.5f;
+        float childCenterY = getDecoratedTop(v) + v.getHeight() * 0.5f;
         float distanceFromCenter = orientationHelper.getDistanceFromCenter(recyclerCenter,
-                getDecoratedLeft(v) + childHalfWidth,
-                getDecoratedTop(v) + childHalfHeight);
+                childCenterX,
+                childCenterY);
         return Math.min(Math.max(-1f, distanceFromCenter / maxDistance), 1f);
     }
 
