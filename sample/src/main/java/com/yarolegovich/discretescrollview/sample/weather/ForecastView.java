@@ -55,9 +55,9 @@ public class ForecastView extends LinearLayout {
         setGravity(Gravity.CENTER_HORIZONTAL);
         inflate(getContext(), R.layout.view_forecast, this);
 
-        weatherDescription = (TextView) findViewById(R.id.weather_description);
-        weatherImage = (ImageView) findViewById(R.id.weather_image);
-        weatherTemperature = (TextView) findViewById(R.id.weather_temperature);
+        weatherDescription = findViewById(R.id.weather_description);
+        weatherImage = findViewById(R.id.weather_image);
+        weatherTemperature = findViewById(R.id.weather_temperature);
     }
 
     private void initGradient() {

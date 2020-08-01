@@ -34,10 +34,10 @@ public class WeatherActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        forecastView = (ForecastView) findViewById(R.id.forecast_view);
+        forecastView = findViewById(R.id.forecast_view);
 
         forecasts = WeatherStation.get().getForecasts();
-        cityPicker = (DiscreteScrollView) findViewById(R.id.forecast_city_picker);
+        cityPicker = findViewById(R.id.forecast_city_picker);
         cityPicker.setSlideOnFling(true);
         cityPicker.setAdapter(new ForecastAdapter(forecasts));
         cityPicker.addOnItemChangedListener(this);

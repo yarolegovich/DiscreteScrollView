@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by yarolegovich on 18.02.2017.
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DiscreteScrollView extends RecyclerView {
 
     public static final int NO_POSITION = DiscreteScrollLayoutManager.NO_POSITION;

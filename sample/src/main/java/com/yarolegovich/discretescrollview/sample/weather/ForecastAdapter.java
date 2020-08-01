@@ -72,8 +72,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.city_image);
-            textView = (TextView) itemView.findViewById(R.id.city_name);
+            imageView = itemView.findViewById(R.id.city_image);
+            textView = itemView.findViewById(R.id.city_name);
 
             itemView.findViewById(R.id.container).setOnClickListener(this);
         }

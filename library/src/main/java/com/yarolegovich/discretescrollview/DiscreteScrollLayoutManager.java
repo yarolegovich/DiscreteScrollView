@@ -256,7 +256,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
+    public void onItemsAdded(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
         int newPosition = currentPosition;
         if (currentPosition == NO_POSITION) {
             newPosition = 0;
@@ -267,7 +267,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsRemoved(RecyclerView recyclerView, int positionStart, int itemCount) {
+    public void onItemsRemoved(@NonNull RecyclerView recyclerView, int positionStart, int itemCount) {
         int newPosition = currentPosition;
         if (recyclerViewProxy.getItemCount() == 0) {
             newPosition = NO_POSITION;
@@ -282,7 +282,7 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onItemsChanged(RecyclerView recyclerView) {
+    public void onItemsChanged(@NonNull RecyclerView recyclerView) {
         //notifyDataSetChanged() was called. We need to ensure that currentPosition is not out of bounds
         currentPosition = Math.min(Math.max(0, currentPosition), recyclerViewProxy.getItemCount() - 1);
         dataSetChangeShiftedPosition = true;
@@ -519,32 +519,32 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public int computeVerticalScrollRange(RecyclerView.State state) {
+    public int computeVerticalScrollRange(@NonNull RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
     @Override
-    public int computeVerticalScrollOffset(RecyclerView.State state) {
+    public int computeVerticalScrollOffset(@NonNull RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeVerticalScrollExtent(RecyclerView.State state) {
+    public int computeVerticalScrollExtent(@NonNull RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
     @Override
-    public int computeHorizontalScrollRange(RecyclerView.State state) {
+    public int computeHorizontalScrollRange(@NonNull RecyclerView.State state) {
         return computeScrollRange(state);
     }
 
     @Override
-    public int computeHorizontalScrollOffset(RecyclerView.State state) {
+    public int computeHorizontalScrollOffset(@NonNull RecyclerView.State state) {
         return computeScrollOffset(state);
     }
 
     @Override
-    public int computeHorizontalScrollExtent(RecyclerView.State state) {
+    public int computeHorizontalScrollExtent(@NonNull RecyclerView.State state) {
         return computeScrollExtent(state);
     }
 
@@ -563,10 +563,10 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     private int computeScrollRange(RecyclerView.State state) {
-        if (getItemCount() == 0) {
+        if (state.getItemCount() == 0) {
             return 0;
         } else {
-            return scrollToChangeCurrent * (getItemCount() - 1);
+            return scrollToChangeCurrent * (state.getItemCount() - 1);
         }
     }
 
@@ -653,12 +653,11 @@ class DiscreteScrollLayoutManager extends RecyclerView.LayoutManager {
     }
 
     @Override
-    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+    public void onInitializeAccessibilityEvent(@NonNull AccessibilityEvent event) {
         super.onInitializeAccessibilityEvent(event);
         if (recyclerViewProxy.getChildCount() > 0) {
-            final AccessibilityRecordCompat record = AccessibilityEventCompat.asRecord(event);
-            record.setFromIndex(getPosition(getFirstChild()));
-            record.setToIndex(getPosition(getLastChild()));
+            event.setFromIndex(getPosition(getFirstChild()));
+            event.setToIndex(getPosition(getLastChild()));
         }
     }
 

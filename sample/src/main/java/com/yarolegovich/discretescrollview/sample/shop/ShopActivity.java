@@ -40,13 +40,13 @@ public class ShopActivity extends AppCompatActivity implements DiscreteScrollVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
-        currentItemName = (TextView) findViewById(R.id.item_name);
-        currentItemPrice = (TextView) findViewById(R.id.item_price);
-        rateItemButton = (ImageView) findViewById(R.id.item_btn_rate);
+        currentItemName = findViewById(R.id.item_name);
+        currentItemPrice = findViewById(R.id.item_price);
+        rateItemButton = findViewById(R.id.item_btn_rate);
 
         shop = Shop.get();
         data = shop.getData();
-        itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
+        itemPicker = findViewById(R.id.item_picker);
         itemPicker.setOrientation(DSVOrientation.HORIZONTAL);
         itemPicker.addOnItemChangedListener(this);
         infiniteAdapter = InfiniteScrollAdapter.wrap(new ShopAdapter(data));

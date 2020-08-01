@@ -86,6 +86,7 @@ public class DiscreteScrollViewOptions {
         return defaultPrefs().getInt(instance.KEY_TRANSITION_TIME, 150);
     }
 
+    @SuppressWarnings("deprecation")
     private static SharedPreferences defaultPrefs() {
         return PreferenceManager.getDefaultSharedPreferences(App.getInstance());
     }

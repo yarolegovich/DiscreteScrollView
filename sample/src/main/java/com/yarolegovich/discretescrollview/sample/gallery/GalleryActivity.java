@@ -34,7 +34,7 @@ public class GalleryActivity extends AppCompatActivity implements
 
         Gallery gallery = Gallery.get();
         List<Image> data = gallery.getData();
-        DiscreteScrollView itemPicker = (DiscreteScrollView) findViewById(R.id.item_picker);
+        DiscreteScrollView itemPicker = findViewById(R.id.item_picker);
         itemPicker.setAdapter(new GalleryAdapter(data));
         itemPicker.addScrollListener(this);
         itemPicker.addOnItemChangedListener(this);

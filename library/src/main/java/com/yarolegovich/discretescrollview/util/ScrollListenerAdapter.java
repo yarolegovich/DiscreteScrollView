@@ -38,7 +38,7 @@ public class ScrollListenerAdapter<T extends RecyclerView.ViewHolder> implements
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ScrollListenerAdapter) {
-            return adaptee.equals(((ScrollListenerAdapter) obj).adaptee);
+            return adaptee.equals(((ScrollListenerAdapter<?>) obj).adaptee);
         } else {
             return super.equals(obj);
         }
