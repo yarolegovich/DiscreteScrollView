@@ -5,13 +5,6 @@ It is similar to a ViewPager, but you can quickly and painlessly create layout, 
 
 ![GifSampleShop](https://github.com/yarolegovich/DiscreteScrollView/blob/master/images/cards_shop.gif)
 
-**DiscreteScrollView** is being sponsored by the following tool, please help to support us by taking a look and signing up to a free trial:
-
-
-<a href="https://tracking.gitads.io/?repo=DiscreteScrollView"> 
- <img src="https://images.gitads.io/DiscreteScrollView" alt="GitAds" width="500"/> 
-</a>
-
 ## Gradle 
 Add this into your dependencies block.
 ```
