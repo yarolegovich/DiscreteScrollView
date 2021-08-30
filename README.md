@@ -1,3 +1,5 @@
+[![Maintainability](https://cloud.quality-gate.com/dashboard/api/badge?projectName=yarolegovich_DiscreteScrollView&branchName=master)](https://cloud.quality-gate.com/dashboard/branches/129967#overview)
+
 # DiscreteScrollView
 
 The library is a RecyclerView-based implementation of a scrollable list, where current item is centered and can be changed using swipes.
